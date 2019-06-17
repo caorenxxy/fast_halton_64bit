@@ -43,8 +43,8 @@ struct Drand48
 
 void test(const char* const filename, const unsigned width, const unsigned height, const bool faure)
 {
-    ofstream out(filename);
-    assert(out);
+    //ofstream out(filename);
+    //assert(out);
 
     // Initialize the sampler, either with Faure permutations or randomized digit permutations.
     Halton_sampler halton_sampler;
@@ -79,48 +79,49 @@ void test(const char* const filename, const unsigned width, const unsigned heigh
                 const float ry = halton_enum.scale_y(sy);
                 // Validate that we're inside the pixel, taking floating-point inaccuracies
                 // into account.
+				//std::cout << x << " " << y << " " << i << std::endl;
+				//std::cout << index << std::endl;
                 assert(x <= rx + 1e-3f && rx - 1e-3f < x + 1);
                 assert(y <= ry + 1e-3f && ry - 1e-3f < y + 1);
                 // Finally, write the samples to the output stream, in gnuplot format.
-                out << rx << " " << ry << " " << sz << endl;
+                //out << rx << " " << ry << " " << sz << endl;
             }
         }
     }
 
-    out.close();
+    //out.close();
 }
 
 int main(int, char**)
 {
-    //test("faure.dat", 640, 480, true);
+    test("faure.dat", 1024, 768, true);
     //srand48(5784); // Make reproducible.
     //test("random.dat", 2048, 1152, false);
-	
+	/*
 	Halton_sampler sampler;
 	sampler.init_faure();
 	for (unsigned long long i = 0; i < 100; ++i) {
 		std::cout << sampler.sample(0, i) << std::endl;
-	}
+	}*/
+	//std::cout << float(0x1.fffffcp-1 / 3077056399u) << std::endl;
+	//std::cout << float(0x1.fffffcp-1 / 3077056399ul) << std::endl;
 	/*
-	unsigned index = 123456789;
-
-	std::cout << 0x3f800000ul << std::endl << 0x3f800000u << std::endl;
-	union Result
-	{
-		unsigned u;
-		float f;
-	} result; // Write reversed bits directly into floating-point mantissa.
-
-	union Result2
-	{
-		unsigned long long u;
-		float f;
-	} result2; // Write reversed bits directly into floating-point mantissa.
-	result.u = 0x3f800000u | (index >> 9);
-	result2.u = 0x3f800000ul | (index >> 9);
-	std::cout << result.f - 1.f << std::endl << result2.f - 1.f << std::endl;*/
-	
-	
+	int w = 1024, h = 768;
+	Halton_enum halton_enum(w, h);
+	std::cout << halton_enum.get_index(0, 68, 75) << std::endl;
+	unsigned int i = 0, j = 0;
+	Halton_sampler sampler;
+	sampler.init_faure();
+	while (i <= 60) {
+		float u = sampler.sample(0, j);
+		float v = sampler.sample(1, j);
+		float x = w * u, y = h * v;
+		if (x >= 68 && x < 69 and y >= 75 && y < 76) ++i;
+		++j;
+	}
+	std::cout << j << std::endl;
+	std::cout << halton_enum.get_max_samples_per_pixel() << std::endl;
+	*/
 	/*
 	std::string bit = "";
 	while (x > 0) {

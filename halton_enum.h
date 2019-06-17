@@ -23,6 +23,7 @@
 
 #include <utility>
 #include <cassert>
+#include "lowdiscrepency.h"
 
 // Determine the index of the i-th sample falling into a pixel, based on the
 // elementary interval property of the Halton sequence.
@@ -38,12 +39,12 @@ public:
     Halton_enum(unsigned width, unsigned height);
 
     // Return how many samples per pixel can be queried before sample index overflow occurs.
-    unsigned get_max_samples_per_pixel() const { return ~0u / m_increment; }
+    unsigned long long get_max_samples_per_pixel() const { return ~0ull / m_increment; }
 
     // Return the index of the i-th sample falling into the given pixel (x, y) within the
     // previously given resolution bounds. i must be smaller than the value returned by
     // get_max_samples_per_pixel.
-    unsigned get_index(unsigned i, unsigned x, unsigned y) const;
+    unsigned long long get_index(unsigned i, unsigned x, unsigned y) const;
 
     // Scale the x-component of a sample in [0,1) to [0,width).
     float scale_x(float x) const;
@@ -53,8 +54,8 @@ public:
 
 private:
     static std::pair<int, int> extended_euclid(int a, int b);
-    static unsigned halton2_inverse(unsigned i, unsigned digits);
-    static unsigned halton3_inverse(unsigned i, unsigned digits);
+    static unsigned long long halton2_inverse(unsigned long long i, unsigned digits);
+    static unsigned long long halton3_inverse(unsigned long long i, unsigned digits);
 
     unsigned m_p2; // Smallest integer with 2^m_p2 >= width.
     unsigned m_p3; // Smallest integer with 3^m_p3 >= height.
@@ -62,7 +63,7 @@ private:
     unsigned m_y; // 2^m_p2 * ((3^m_p3)^(-1) mod 2^m_p2).
     float m_scale_x; // 2^m_p2.
     float m_scale_y; // 3^m_p3.
-    unsigned m_increment; // Product of prime powers, i.e. m_res2 * m_res3.
+    unsigned long long m_increment; // Product of prime powers, i.e. m_res2 * m_res3.
 };
 
 inline Halton_enum::Halton_enum(const unsigned width, const unsigned height)
@@ -99,13 +100,13 @@ inline Halton_enum::Halton_enum(const unsigned width, const unsigned height)
     m_y = w * inv3;
 }
 
-inline unsigned Halton_enum::get_index(const unsigned i, const unsigned x, const unsigned y) const
+inline unsigned long long Halton_enum::get_index(const unsigned i, const unsigned x, const unsigned y) const
 {
     // Promote to 64 bits to avoid overflow.
     const unsigned long long hx = halton2_inverse(x, m_p2);
     const unsigned long long hy = halton3_inverse(y, m_p3);
     // Apply Chinese remainder theorem.
-    const unsigned offset = static_cast<unsigned>((hx * m_x + hy * m_y) % m_increment);
+    const unsigned long long  offset = (hx * m_x + hy * m_y) % m_increment;
     return offset + i * m_increment;
 }
 
@@ -129,17 +130,21 @@ inline std::pair<int, int> Halton_enum::extended_euclid(const int a, const int b
     return std::make_pair(st.second, st.first - q * st.second);
 }
 
-inline unsigned Halton_enum::halton2_inverse(unsigned index, const unsigned digits)
+inline unsigned long long Halton_enum::halton2_inverse(unsigned long long index, const unsigned digits)
 {
+	/*
     index = (index << 16) | (index >> 16);
     index = ((index & 0x00ff00ff) << 8) | ((index & 0xff00ff00) >> 8);
     index = ((index & 0x0f0f0f0f) << 4) | ((index & 0xf0f0f0f0) >> 4);
     index = ((index & 0x33333333) << 2) | ((index & 0xcccccccc) >> 2);
     index = ((index & 0x55555555) << 1) | ((index & 0xaaaaaaaa) >> 1);
-    return index >> (32 - digits);
+	return index >> (32 - digits);*/
+	index = reverse_bit64(index);
+	return index >> (64 - digits);
+  
 }
 
-inline unsigned Halton_enum::halton3_inverse(unsigned index, const unsigned digits)
+inline unsigned long long Halton_enum::halton3_inverse(unsigned long long index, const unsigned digits)
 {
     unsigned result = 0;
     for (unsigned d = 0; d < digits; ++d)

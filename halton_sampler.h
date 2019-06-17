@@ -25,7 +25,8 @@
 
 #include <algorithm>
 #include <vector>
-
+#include "lowdiscrepency.h"
+/*
 inline unsigned int reverse_bit32(unsigned int n) {
 	n = (n << 16) | (n >> 16);
 	n = ((n & 0x00ff00ff) << 8) | ((n & 0xff00ff00) >> 8);
@@ -33,7 +34,7 @@ inline unsigned int reverse_bit32(unsigned int n) {
 	n = ((n & 0x33333333) << 2) | ((n & 0xcccccccc) >> 2);
 	n = ((n & 0x55555555) << 1) | ((n & 0xaaaaaaaa) >> 1);
 	return n;
-}
+}*/
 
 // Compute points of the Halton sequence with with digit-permutations for different bases.
 class Halton_sampler
@@ -1428,9 +1429,7 @@ inline void Halton_sampler::init_tables(const std::vector<std::vector<unsigned s
 inline float Halton_sampler::halton2(unsigned long long index) const
 {	
 
-	unsigned long long n0 = reverse_bit32((unsigned int)index);
-	unsigned long long n1 = reverse_bit32((unsigned int)(index >> 32));
-	index = (n0 << 32) | n1;
+	index = reverse_bit64(index);
     union Result
     {
         unsigned long long u;
@@ -1443,1857 +1442,1857 @@ inline float Halton_sampler::halton2(unsigned long long index) const
 
 inline float Halton_sampler::halton3(const unsigned long long index) const
 {
-	return (m_perm3[index % 243ul] * 14348907ul +
-		m_perm3[(index / 243ul) % 243ul] * 59049ul +
-		m_perm3[(index / 59049ul) % 243ul] * 243ul +
-		m_perm3[(index / 14348907ul) % 243ul]) * float(0x1.fffffcp-1 / 3486784401ul); // Results in [0,1).
+	return (m_perm3[index % 243ull] * 14348907ull +
+		m_perm3[(index / 243ull) % 243ull] * 59049ull +
+		m_perm3[(index / 59049ull) % 243ull] * 243ull +
+		m_perm3[(index / 14348907ull) % 243ull]) * float(0x1.fffffcp-1 / 3486784401ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton5(const unsigned long long index) const
 {
-	return (m_perm5[index % 125ul] * 1953125ul +
-		m_perm5[(index / 125ul) % 125ul] * 15625ul +
-		m_perm5[(index / 15625ul) % 125ul] * 125ul +
-		m_perm5[(index / 1953125ul) % 125ul]) * float(0x1.fffffcp-1 / 244140625ul); // Results in [0,1).
+	return (m_perm5[index % 125ull] * 1953125ull +
+		m_perm5[(index / 125ull) % 125ull] * 15625ull +
+		m_perm5[(index / 15625ull) % 125ull] * 125ull +
+		m_perm5[(index / 1953125ull) % 125ull]) * float(0x1.fffffcp-1 / 244140625ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton7(const unsigned long long index) const
 {
-	return (m_perm7[index % 343ul] * 117649ul +
-		m_perm7[(index / 343ul) % 343ul] * 343ul +
-		m_perm7[(index / 117649ul) % 343ul]) * float(0x1.fffffcp-1 / 40353607ul); // Results in [0,1).
+	return (m_perm7[index % 343ull] * 117649ull +
+		m_perm7[(index / 343ull) % 343ull] * 343ull +
+		m_perm7[(index / 117649ull) % 343ull]) * float(0x1.fffffcp-1 / 40353607ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton11(const unsigned long long index) const
 {
-	return (m_perm11[index % 121ul] * 1771561ul +
-		m_perm11[(index / 121ul) % 121ul] * 14641ul +
-		m_perm11[(index / 14641ul) % 121ul] * 121ul +
-		m_perm11[(index / 1771561ul) % 121ul]) * float(0x1.fffffcp-1 / 214358881ul); // Results in [0,1).
+	return (m_perm11[index % 121ull] * 1771561ull +
+		m_perm11[(index / 121ull) % 121ull] * 14641ull +
+		m_perm11[(index / 14641ull) % 121ull] * 121ull +
+		m_perm11[(index / 1771561ull) % 121ull]) * float(0x1.fffffcp-1 / 214358881ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton13(const unsigned long long index) const
 {
-	return (m_perm13[index % 169ul] * 4826809ul +
-		m_perm13[(index / 169ul) % 169ul] * 28561ul +
-		m_perm13[(index / 28561ul) % 169ul] * 169ul +
-		m_perm13[(index / 4826809ul) % 169ul]) * float(0x1.fffffcp-1 / 815730721ul); // Results in [0,1).
+	return (m_perm13[index % 169ull] * 4826809ull +
+		m_perm13[(index / 169ull) % 169ull] * 28561ull +
+		m_perm13[(index / 28561ull) % 169ull] * 169ull +
+		m_perm13[(index / 4826809ull) % 169ull]) * float(0x1.fffffcp-1 / 815730721ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton17(const unsigned long long index) const
 {
-	return (m_perm17[index % 289ul] * 83521ul +
-		m_perm17[(index / 289ul) % 289ul] * 289ul +
-		m_perm17[(index / 83521ul) % 289ul]) * float(0x1.fffffcp-1 / 24137569ul); // Results in [0,1).
+	return (m_perm17[index % 289ull] * 83521ull +
+		m_perm17[(index / 289ull) % 289ull] * 289ull +
+		m_perm17[(index / 83521ull) % 289ull]) * float(0x1.fffffcp-1 / 24137569ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton19(const unsigned long long index) const
 {
-	return (m_perm19[index % 361ul] * 130321ul +
-		m_perm19[(index / 361ul) % 361ul] * 361ul +
-		m_perm19[(index / 130321ul) % 361ul]) * float(0x1.fffffcp-1 / 47045881ul); // Results in [0,1).
+	return (m_perm19[index % 361ull] * 130321ull +
+		m_perm19[(index / 361ull) % 361ull] * 361ull +
+		m_perm19[(index / 130321ull) % 361ull]) * float(0x1.fffffcp-1 / 47045881ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton23(const unsigned long long index) const
 {
-	return (m_perm23[index % 23ul] * 148035889ul +
-		m_perm23[(index / 23ul) % 23ul] * 6436343ul +
-		m_perm23[(index / 529ul) % 23ul] * 279841ul +
-		m_perm23[(index / 12167ul) % 23ul] * 12167ul +
-		m_perm23[(index / 279841ul) % 23ul] * 529ul +
-		m_perm23[(index / 6436343ul) % 23ul] * 23ul +
-		m_perm23[(index / 148035889ul) % 23ul]) * float(0x1.fffffcp-1 / 3404825447ul); // Results in [0,1).
+	return (m_perm23[index % 23ull] * 148035889ull +
+		m_perm23[(index / 23ull) % 23ull] * 6436343ull +
+		m_perm23[(index / 529ull) % 23ull] * 279841ull +
+		m_perm23[(index / 12167ull) % 23ull] * 12167ull +
+		m_perm23[(index / 279841ull) % 23ull] * 529ull +
+		m_perm23[(index / 6436343ull) % 23ull] * 23ull +
+		m_perm23[(index / 148035889ull) % 23ull]) * float(0x1.fffffcp-1 / 3404825447ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton29(const unsigned long long index) const
 {
-	return (m_perm29[index % 29ul] * 20511149ul +
-		m_perm29[(index / 29ul) % 29ul] * 707281ul +
-		m_perm29[(index / 841ul) % 29ul] * 24389ul +
-		m_perm29[(index / 24389ul) % 29ul] * 841ul +
-		m_perm29[(index / 707281ul) % 29ul] * 29ul +
-		m_perm29[(index / 20511149ul) % 29ul]) * float(0x1.fffffcp-1 / 594823321ul); // Results in [0,1).
+	return (m_perm29[index % 29ull] * 20511149ull +
+		m_perm29[(index / 29ull) % 29ull] * 707281ull +
+		m_perm29[(index / 841ull) % 29ull] * 24389ull +
+		m_perm29[(index / 24389ull) % 29ull] * 841ull +
+		m_perm29[(index / 707281ull) % 29ull] * 29ull +
+		m_perm29[(index / 20511149ull) % 29ull]) * float(0x1.fffffcp-1 / 594823321ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton31(const unsigned long long index) const
 {
-	return (m_perm31[index % 31ul] * 28629151ul +
-		m_perm31[(index / 31ul) % 31ul] * 923521ul +
-		m_perm31[(index / 961ul) % 31ul] * 29791ul +
-		m_perm31[(index / 29791ul) % 31ul] * 961ul +
-		m_perm31[(index / 923521ul) % 31ul] * 31ul +
-		m_perm31[(index / 28629151ul) % 31ul]) * float(0x1.fffffcp-1 / 887503681ul); // Results in [0,1).
+	return (m_perm31[index % 31ull] * 28629151ull +
+		m_perm31[(index / 31ull) % 31ull] * 923521ull +
+		m_perm31[(index / 961ull) % 31ull] * 29791ull +
+		m_perm31[(index / 29791ull) % 31ull] * 961ull +
+		m_perm31[(index / 923521ull) % 31ull] * 31ull +
+		m_perm31[(index / 28629151ull) % 31ull]) * float(0x1.fffffcp-1 / 887503681ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton37(const unsigned long long index) const
 {
-	return (m_perm37[index % 37ul] * 69343957ul +
-		m_perm37[(index / 37ul) % 37ul] * 1874161ul +
-		m_perm37[(index / 1369ul) % 37ul] * 50653ul +
-		m_perm37[(index / 50653ul) % 37ul] * 1369ul +
-		m_perm37[(index / 1874161ul) % 37ul] * 37ul +
-		m_perm37[(index / 69343957ul) % 37ul]) * float(0x1.fffffcp-1 / 2565726409ul); // Results in [0,1).
+	return (m_perm37[index % 37ull] * 69343957ull +
+		m_perm37[(index / 37ull) % 37ull] * 1874161ull +
+		m_perm37[(index / 1369ull) % 37ull] * 50653ull +
+		m_perm37[(index / 50653ull) % 37ull] * 1369ull +
+		m_perm37[(index / 1874161ull) % 37ull] * 37ull +
+		m_perm37[(index / 69343957ull) % 37ull]) * float(0x1.fffffcp-1 / 2565726409ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton41(const unsigned long long index) const
 {
-	return (m_perm41[index % 41ul] * 2825761ul +
-		m_perm41[(index / 41ul) % 41ul] * 68921ul +
-		m_perm41[(index / 1681ul) % 41ul] * 1681ul +
-		m_perm41[(index / 68921ul) % 41ul] * 41ul +
-		m_perm41[(index / 2825761ul) % 41ul]) * float(0x1.fffffcp-1 / 115856201ul); // Results in [0,1).
+	return (m_perm41[index % 41ull] * 2825761ull +
+		m_perm41[(index / 41ull) % 41ull] * 68921ull +
+		m_perm41[(index / 1681ull) % 41ull] * 1681ull +
+		m_perm41[(index / 68921ull) % 41ull] * 41ull +
+		m_perm41[(index / 2825761ull) % 41ull]) * float(0x1.fffffcp-1 / 115856201ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton43(const unsigned long long index) const
 {
-	return (m_perm43[index % 43ul] * 3418801ul +
-		m_perm43[(index / 43ul) % 43ul] * 79507ul +
-		m_perm43[(index / 1849ul) % 43ul] * 1849ul +
-		m_perm43[(index / 79507ul) % 43ul] * 43ul +
-		m_perm43[(index / 3418801ul) % 43ul]) * float(0x1.fffffcp-1 / 147008443ul); // Results in [0,1).
+	return (m_perm43[index % 43ull] * 3418801ull +
+		m_perm43[(index / 43ull) % 43ull] * 79507ull +
+		m_perm43[(index / 1849ull) % 43ull] * 1849ull +
+		m_perm43[(index / 79507ull) % 43ull] * 43ull +
+		m_perm43[(index / 3418801ull) % 43ull]) * float(0x1.fffffcp-1 / 147008443ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton47(const unsigned long long index) const
 {
-	return (m_perm47[index % 47ul] * 4879681ul +
-		m_perm47[(index / 47ul) % 47ul] * 103823ul +
-		m_perm47[(index / 2209ul) % 47ul] * 2209ul +
-		m_perm47[(index / 103823ul) % 47ul] * 47ul +
-		m_perm47[(index / 4879681ul) % 47ul]) * float(0x1.fffffcp-1 / 229345007ul); // Results in [0,1).
+	return (m_perm47[index % 47ull] * 4879681ull +
+		m_perm47[(index / 47ull) % 47ull] * 103823ull +
+		m_perm47[(index / 2209ull) % 47ull] * 2209ull +
+		m_perm47[(index / 103823ull) % 47ull] * 47ull +
+		m_perm47[(index / 4879681ull) % 47ull]) * float(0x1.fffffcp-1 / 229345007ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton53(const unsigned long long index) const
 {
-	return (m_perm53[index % 53ul] * 7890481ul +
-		m_perm53[(index / 53ul) % 53ul] * 148877ul +
-		m_perm53[(index / 2809ul) % 53ul] * 2809ul +
-		m_perm53[(index / 148877ul) % 53ul] * 53ul +
-		m_perm53[(index / 7890481ul) % 53ul]) * float(0x1.fffffcp-1 / 418195493ul); // Results in [0,1).
+	return (m_perm53[index % 53ull] * 7890481ull +
+		m_perm53[(index / 53ull) % 53ull] * 148877ull +
+		m_perm53[(index / 2809ull) % 53ull] * 2809ull +
+		m_perm53[(index / 148877ull) % 53ull] * 53ull +
+		m_perm53[(index / 7890481ull) % 53ull]) * float(0x1.fffffcp-1 / 418195493ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton59(const unsigned long long index) const
 {
-	return (m_perm59[index % 59ul] * 12117361ul +
-		m_perm59[(index / 59ul) % 59ul] * 205379ul +
-		m_perm59[(index / 3481ul) % 59ul] * 3481ul +
-		m_perm59[(index / 205379ul) % 59ul] * 59ul +
-		m_perm59[(index / 12117361ul) % 59ul]) * float(0x1.fffffcp-1 / 714924299ul); // Results in [0,1).
+	return (m_perm59[index % 59ull] * 12117361ull +
+		m_perm59[(index / 59ull) % 59ull] * 205379ull +
+		m_perm59[(index / 3481ull) % 59ull] * 3481ull +
+		m_perm59[(index / 205379ull) % 59ull] * 59ull +
+		m_perm59[(index / 12117361ull) % 59ull]) * float(0x1.fffffcp-1 / 714924299ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton61(const unsigned long long index) const
 {
-	return (m_perm61[index % 61ul] * 13845841ul +
-		m_perm61[(index / 61ul) % 61ul] * 226981ul +
-		m_perm61[(index / 3721ul) % 61ul] * 3721ul +
-		m_perm61[(index / 226981ul) % 61ul] * 61ul +
-		m_perm61[(index / 13845841ul) % 61ul]) * float(0x1.fffffcp-1 / 844596301ul); // Results in [0,1).
+	return (m_perm61[index % 61ull] * 13845841ull +
+		m_perm61[(index / 61ull) % 61ull] * 226981ull +
+		m_perm61[(index / 3721ull) % 61ull] * 3721ull +
+		m_perm61[(index / 226981ull) % 61ull] * 61ull +
+		m_perm61[(index / 13845841ull) % 61ull]) * float(0x1.fffffcp-1 / 844596301ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton67(const unsigned long long index) const
 {
-	return (m_perm67[index % 67ul] * 20151121ul +
-		m_perm67[(index / 67ul) % 67ul] * 300763ul +
-		m_perm67[(index / 4489ul) % 67ul] * 4489ul +
-		m_perm67[(index / 300763ul) % 67ul] * 67ul +
-		m_perm67[(index / 20151121ul) % 67ul]) * float(0x1.fffffcp-1 / 1350125107ul); // Results in [0,1).
+	return (m_perm67[index % 67ull] * 20151121ull +
+		m_perm67[(index / 67ull) % 67ull] * 300763ull +
+		m_perm67[(index / 4489ull) % 67ull] * 4489ull +
+		m_perm67[(index / 300763ull) % 67ull] * 67ull +
+		m_perm67[(index / 20151121ull) % 67ull]) * float(0x1.fffffcp-1 / 1350125107ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton71(const unsigned long long index) const
 {
-	return (m_perm71[index % 71ul] * 25411681ul +
-		m_perm71[(index / 71ul) % 71ul] * 357911ul +
-		m_perm71[(index / 5041ul) % 71ul] * 5041ul +
-		m_perm71[(index / 357911ul) % 71ul] * 71ul +
-		m_perm71[(index / 25411681ul) % 71ul]) * float(0x1.fffffcp-1 / 1804229351ul); // Results in [0,1).
+	return (m_perm71[index % 71ull] * 25411681ull +
+		m_perm71[(index / 71ull) % 71ull] * 357911ull +
+		m_perm71[(index / 5041ull) % 71ull] * 5041ull +
+		m_perm71[(index / 357911ull) % 71ull] * 71ull +
+		m_perm71[(index / 25411681ull) % 71ull]) * float(0x1.fffffcp-1 / 1804229351ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton73(const unsigned long long index) const
 {
-	return (m_perm73[index % 73ul] * 28398241ul +
-		m_perm73[(index / 73ul) % 73ul] * 389017ul +
-		m_perm73[(index / 5329ul) % 73ul] * 5329ul +
-		m_perm73[(index / 389017ul) % 73ul] * 73ul +
-		m_perm73[(index / 28398241ul) % 73ul]) * float(0x1.fffffcp-1 / 2073071593ul); // Results in [0,1).
+	return (m_perm73[index % 73ull] * 28398241ull +
+		m_perm73[(index / 73ull) % 73ull] * 389017ull +
+		m_perm73[(index / 5329ull) % 73ull] * 5329ull +
+		m_perm73[(index / 389017ull) % 73ull] * 73ull +
+		m_perm73[(index / 28398241ull) % 73ull]) * float(0x1.fffffcp-1 / 2073071593ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton79(const unsigned long long index) const
 {
-	return (m_perm79[index % 79ul] * 38950081ul +
-		m_perm79[(index / 79ul) % 79ul] * 493039ul +
-		m_perm79[(index / 6241ul) % 79ul] * 6241ul +
-		m_perm79[(index / 493039ul) % 79ul] * 79ul +
-		m_perm79[(index / 38950081ul) % 79ul]) * float(0x1.fffffcp-1 / 3077056399ul); // Results in [0,1).
+	return (m_perm79[index % 79ull] * 38950081ull +
+		m_perm79[(index / 79ull) % 79ull] * 493039ull +
+		m_perm79[(index / 6241ull) % 79ull] * 6241ull +
+		m_perm79[(index / 493039ull) % 79ull] * 79ull +
+		m_perm79[(index / 38950081ull) % 79ull]) * float(0x1.fffffcp-1 / 3077056399ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton83(const unsigned long long index) const
 {
-	return (m_perm83[index % 83ul] * 47458321ul +
-		m_perm83[(index / 83ul) % 83ul] * 571787ul +
-		m_perm83[(index / 6889ul) % 83ul] * 6889ul +
-		m_perm83[(index / 571787ul) % 83ul] * 83ul +
-		m_perm83[(index / 47458321ul) % 83ul]) * float(0x1.fffffcp-1 / 3939040643ul); // Results in [0,1).
+	return (m_perm83[index % 83ull] * 47458321ull +
+		m_perm83[(index / 83ull) % 83ull] * 571787ull +
+		m_perm83[(index / 6889ull) % 83ull] * 6889ull +
+		m_perm83[(index / 571787ull) % 83ull] * 83ull +
+		m_perm83[(index / 47458321ull) % 83ull]) * float(0x1.fffffcp-1 / 3939040643ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton89(const unsigned long long index) const
 {
-	return (m_perm89[index % 89ul] * 704969ul +
-		m_perm89[(index / 89ul) % 89ul] * 7921ul +
-		m_perm89[(index / 7921ul) % 89ul] * 89ul +
-		m_perm89[(index / 704969ul) % 89ul]) * float(0x1.fffffcp-1 / 62742241ul); // Results in [0,1).
+	return (m_perm89[index % 89ull] * 704969ull +
+		m_perm89[(index / 89ull) % 89ull] * 7921ull +
+		m_perm89[(index / 7921ull) % 89ull] * 89ull +
+		m_perm89[(index / 704969ull) % 89ull]) * float(0x1.fffffcp-1 / 62742241ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton97(const unsigned long long index) const
 {
-	return (m_perm97[index % 97ul] * 912673ul +
-		m_perm97[(index / 97ul) % 97ul] * 9409ul +
-		m_perm97[(index / 9409ul) % 97ul] * 97ul +
-		m_perm97[(index / 912673ul) % 97ul]) * float(0x1.fffffcp-1 / 88529281ul); // Results in [0,1).
+	return (m_perm97[index % 97ull] * 912673ull +
+		m_perm97[(index / 97ull) % 97ull] * 9409ull +
+		m_perm97[(index / 9409ull) % 97ull] * 97ull +
+		m_perm97[(index / 912673ull) % 97ull]) * float(0x1.fffffcp-1 / 88529281ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton101(const unsigned long long index) const
 {
-	return (m_perm101[index % 101ul] * 1030301ul +
-		m_perm101[(index / 101ul) % 101ul] * 10201ul +
-		m_perm101[(index / 10201ul) % 101ul] * 101ul +
-		m_perm101[(index / 1030301ul) % 101ul]) * float(0x1.fffffcp-1 / 104060401ul); // Results in [0,1).
+	return (m_perm101[index % 101ull] * 1030301ull +
+		m_perm101[(index / 101ull) % 101ull] * 10201ull +
+		m_perm101[(index / 10201ull) % 101ull] * 101ull +
+		m_perm101[(index / 1030301ull) % 101ull]) * float(0x1.fffffcp-1 / 104060401ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton103(const unsigned long long index) const
 {
-	return (m_perm103[index % 103ul] * 1092727ul +
-		m_perm103[(index / 103ul) % 103ul] * 10609ul +
-		m_perm103[(index / 10609ul) % 103ul] * 103ul +
-		m_perm103[(index / 1092727ul) % 103ul]) * float(0x1.fffffcp-1 / 112550881ul); // Results in [0,1).
+	return (m_perm103[index % 103ull] * 1092727ull +
+		m_perm103[(index / 103ull) % 103ull] * 10609ull +
+		m_perm103[(index / 10609ull) % 103ull] * 103ull +
+		m_perm103[(index / 1092727ull) % 103ull]) * float(0x1.fffffcp-1 / 112550881ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton107(const unsigned long long index) const
 {
-	return (m_perm107[index % 107ul] * 1225043ul +
-		m_perm107[(index / 107ul) % 107ul] * 11449ul +
-		m_perm107[(index / 11449ul) % 107ul] * 107ul +
-		m_perm107[(index / 1225043ul) % 107ul]) * float(0x1.fffffcp-1 / 131079601ul); // Results in [0,1).
+	return (m_perm107[index % 107ull] * 1225043ull +
+		m_perm107[(index / 107ull) % 107ull] * 11449ull +
+		m_perm107[(index / 11449ull) % 107ull] * 107ull +
+		m_perm107[(index / 1225043ull) % 107ull]) * float(0x1.fffffcp-1 / 131079601ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton109(const unsigned long long index) const
 {
-	return (m_perm109[index % 109ul] * 1295029ul +
-		m_perm109[(index / 109ul) % 109ul] * 11881ul +
-		m_perm109[(index / 11881ul) % 109ul] * 109ul +
-		m_perm109[(index / 1295029ul) % 109ul]) * float(0x1.fffffcp-1 / 141158161ul); // Results in [0,1).
+	return (m_perm109[index % 109ull] * 1295029ull +
+		m_perm109[(index / 109ull) % 109ull] * 11881ull +
+		m_perm109[(index / 11881ull) % 109ull] * 109ull +
+		m_perm109[(index / 1295029ull) % 109ull]) * float(0x1.fffffcp-1 / 141158161ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton113(const unsigned long long index) const
 {
-	return (m_perm113[index % 113ul] * 1442897ul +
-		m_perm113[(index / 113ul) % 113ul] * 12769ul +
-		m_perm113[(index / 12769ul) % 113ul] * 113ul +
-		m_perm113[(index / 1442897ul) % 113ul]) * float(0x1.fffffcp-1 / 163047361ul); // Results in [0,1).
+	return (m_perm113[index % 113ull] * 1442897ull +
+		m_perm113[(index / 113ull) % 113ull] * 12769ull +
+		m_perm113[(index / 12769ull) % 113ull] * 113ull +
+		m_perm113[(index / 1442897ull) % 113ull]) * float(0x1.fffffcp-1 / 163047361ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton127(const unsigned long long index) const
 {
-	return (m_perm127[index % 127ul] * 2048383ul +
-		m_perm127[(index / 127ul) % 127ul] * 16129ul +
-		m_perm127[(index / 16129ul) % 127ul] * 127ul +
-		m_perm127[(index / 2048383ul) % 127ul]) * float(0x1.fffffcp-1 / 260144641ul); // Results in [0,1).
+	return (m_perm127[index % 127ull] * 2048383ull +
+		m_perm127[(index / 127ull) % 127ull] * 16129ull +
+		m_perm127[(index / 16129ull) % 127ull] * 127ull +
+		m_perm127[(index / 2048383ull) % 127ull]) * float(0x1.fffffcp-1 / 260144641ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton131(const unsigned long long index) const
 {
-	return (m_perm131[index % 131ul] * 2248091ul +
-		m_perm131[(index / 131ul) % 131ul] * 17161ul +
-		m_perm131[(index / 17161ul) % 131ul] * 131ul +
-		m_perm131[(index / 2248091ul) % 131ul]) * float(0x1.fffffcp-1 / 294499921ul); // Results in [0,1).
+	return (m_perm131[index % 131ull] * 2248091ull +
+		m_perm131[(index / 131ull) % 131ull] * 17161ull +
+		m_perm131[(index / 17161ull) % 131ull] * 131ull +
+		m_perm131[(index / 2248091ull) % 131ull]) * float(0x1.fffffcp-1 / 294499921ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton137(const unsigned long long index) const
 {
-	return (m_perm137[index % 137ul] * 2571353ul +
-		m_perm137[(index / 137ul) % 137ul] * 18769ul +
-		m_perm137[(index / 18769ul) % 137ul] * 137ul +
-		m_perm137[(index / 2571353ul) % 137ul]) * float(0x1.fffffcp-1 / 352275361ul); // Results in [0,1).
+	return (m_perm137[index % 137ull] * 2571353ull +
+		m_perm137[(index / 137ull) % 137ull] * 18769ull +
+		m_perm137[(index / 18769ull) % 137ull] * 137ull +
+		m_perm137[(index / 2571353ull) % 137ull]) * float(0x1.fffffcp-1 / 352275361ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton139(const unsigned long long index) const
 {
-	return (m_perm139[index % 139ul] * 2685619ul +
-		m_perm139[(index / 139ul) % 139ul] * 19321ul +
-		m_perm139[(index / 19321ul) % 139ul] * 139ul +
-		m_perm139[(index / 2685619ul) % 139ul]) * float(0x1.fffffcp-1 / 373301041ul); // Results in [0,1).
+	return (m_perm139[index % 139ull] * 2685619ull +
+		m_perm139[(index / 139ull) % 139ull] * 19321ull +
+		m_perm139[(index / 19321ull) % 139ull] * 139ull +
+		m_perm139[(index / 2685619ull) % 139ull]) * float(0x1.fffffcp-1 / 373301041ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton149(const unsigned long long index) const
 {
-	return (m_perm149[index % 149ul] * 3307949ul +
-		m_perm149[(index / 149ul) % 149ul] * 22201ul +
-		m_perm149[(index / 22201ul) % 149ul] * 149ul +
-		m_perm149[(index / 3307949ul) % 149ul]) * float(0x1.fffffcp-1 / 492884401ul); // Results in [0,1).
+	return (m_perm149[index % 149ull] * 3307949ull +
+		m_perm149[(index / 149ull) % 149ull] * 22201ull +
+		m_perm149[(index / 22201ull) % 149ull] * 149ull +
+		m_perm149[(index / 3307949ull) % 149ull]) * float(0x1.fffffcp-1 / 492884401ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton151(const unsigned long long index) const
 {
-	return (m_perm151[index % 151ul] * 3442951ul +
-		m_perm151[(index / 151ul) % 151ul] * 22801ul +
-		m_perm151[(index / 22801ul) % 151ul] * 151ul +
-		m_perm151[(index / 3442951ul) % 151ul]) * float(0x1.fffffcp-1 / 519885601ul); // Results in [0,1).
+	return (m_perm151[index % 151ull] * 3442951ull +
+		m_perm151[(index / 151ull) % 151ull] * 22801ull +
+		m_perm151[(index / 22801ull) % 151ull] * 151ull +
+		m_perm151[(index / 3442951ull) % 151ull]) * float(0x1.fffffcp-1 / 519885601ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton157(const unsigned long long index) const
 {
-	return (m_perm157[index % 157ul] * 3869893ul +
-		m_perm157[(index / 157ul) % 157ul] * 24649ul +
-		m_perm157[(index / 24649ul) % 157ul] * 157ul +
-		m_perm157[(index / 3869893ul) % 157ul]) * float(0x1.fffffcp-1 / 607573201ul); // Results in [0,1).
+	return (m_perm157[index % 157ull] * 3869893ull +
+		m_perm157[(index / 157ull) % 157ull] * 24649ull +
+		m_perm157[(index / 24649ull) % 157ull] * 157ull +
+		m_perm157[(index / 3869893ull) % 157ull]) * float(0x1.fffffcp-1 / 607573201ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton163(const unsigned long long index) const
 {
-	return (m_perm163[index % 163ul] * 4330747ul +
-		m_perm163[(index / 163ul) % 163ul] * 26569ul +
-		m_perm163[(index / 26569ul) % 163ul] * 163ul +
-		m_perm163[(index / 4330747ul) % 163ul]) * float(0x1.fffffcp-1 / 705911761ul); // Results in [0,1).
+	return (m_perm163[index % 163ull] * 4330747ull +
+		m_perm163[(index / 163ull) % 163ull] * 26569ull +
+		m_perm163[(index / 26569ull) % 163ull] * 163ull +
+		m_perm163[(index / 4330747ull) % 163ull]) * float(0x1.fffffcp-1 / 705911761ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton167(const unsigned long long index) const
 {
-	return (m_perm167[index % 167ul] * 4657463ul +
-		m_perm167[(index / 167ul) % 167ul] * 27889ul +
-		m_perm167[(index / 27889ul) % 167ul] * 167ul +
-		m_perm167[(index / 4657463ul) % 167ul]) * float(0x1.fffffcp-1 / 777796321ul); // Results in [0,1).
+	return (m_perm167[index % 167ull] * 4657463ull +
+		m_perm167[(index / 167ull) % 167ull] * 27889ull +
+		m_perm167[(index / 27889ull) % 167ull] * 167ull +
+		m_perm167[(index / 4657463ull) % 167ull]) * float(0x1.fffffcp-1 / 777796321ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton173(const unsigned long long index) const
 {
-	return (m_perm173[index % 173ul] * 5177717ul +
-		m_perm173[(index / 173ul) % 173ul] * 29929ul +
-		m_perm173[(index / 29929ul) % 173ul] * 173ul +
-		m_perm173[(index / 5177717ul) % 173ul]) * float(0x1.fffffcp-1 / 895745041ul); // Results in [0,1).
+	return (m_perm173[index % 173ull] * 5177717ull +
+		m_perm173[(index / 173ull) % 173ull] * 29929ull +
+		m_perm173[(index / 29929ull) % 173ull] * 173ull +
+		m_perm173[(index / 5177717ull) % 173ull]) * float(0x1.fffffcp-1 / 895745041ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton179(const unsigned long long index) const
 {
-	return (m_perm179[index % 179ul] * 5735339ul +
-		m_perm179[(index / 179ul) % 179ul] * 32041ul +
-		m_perm179[(index / 32041ul) % 179ul] * 179ul +
-		m_perm179[(index / 5735339ul) % 179ul]) * float(0x1.fffffcp-1 / 1026625681ul); // Results in [0,1).
+	return (m_perm179[index % 179ull] * 5735339ull +
+		m_perm179[(index / 179ull) % 179ull] * 32041ull +
+		m_perm179[(index / 32041ull) % 179ull] * 179ull +
+		m_perm179[(index / 5735339ull) % 179ull]) * float(0x1.fffffcp-1 / 1026625681ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton181(const unsigned long long index) const
 {
-	return (m_perm181[index % 181ul] * 5929741ul +
-		m_perm181[(index / 181ul) % 181ul] * 32761ul +
-		m_perm181[(index / 32761ul) % 181ul] * 181ul +
-		m_perm181[(index / 5929741ul) % 181ul]) * float(0x1.fffffcp-1 / 1073283121ul); // Results in [0,1).
+	return (m_perm181[index % 181ull] * 5929741ull +
+		m_perm181[(index / 181ull) % 181ull] * 32761ull +
+		m_perm181[(index / 32761ull) % 181ull] * 181ull +
+		m_perm181[(index / 5929741ull) % 181ull]) * float(0x1.fffffcp-1 / 1073283121ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton191(const unsigned long long index) const
 {
-	return (m_perm191[index % 191ul] * 6967871ul +
-		m_perm191[(index / 191ul) % 191ul] * 36481ul +
-		m_perm191[(index / 36481ul) % 191ul] * 191ul +
-		m_perm191[(index / 6967871ul) % 191ul]) * float(0x1.fffffcp-1 / 1330863361ul); // Results in [0,1).
+	return (m_perm191[index % 191ull] * 6967871ull +
+		m_perm191[(index / 191ull) % 191ull] * 36481ull +
+		m_perm191[(index / 36481ull) % 191ull] * 191ull +
+		m_perm191[(index / 6967871ull) % 191ull]) * float(0x1.fffffcp-1 / 1330863361ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton193(const unsigned long long index) const
 {
-	return (m_perm193[index % 193ul] * 7189057ul +
-		m_perm193[(index / 193ul) % 193ul] * 37249ul +
-		m_perm193[(index / 37249ul) % 193ul] * 193ul +
-		m_perm193[(index / 7189057ul) % 193ul]) * float(0x1.fffffcp-1 / 1387488001ul); // Results in [0,1).
+	return (m_perm193[index % 193ull] * 7189057ull +
+		m_perm193[(index / 193ull) % 193ull] * 37249ull +
+		m_perm193[(index / 37249ull) % 193ull] * 193ull +
+		m_perm193[(index / 7189057ull) % 193ull]) * float(0x1.fffffcp-1 / 1387488001ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton197(const unsigned long long index) const
 {
-	return (m_perm197[index % 197ul] * 7645373ul +
-		m_perm197[(index / 197ul) % 197ul] * 38809ul +
-		m_perm197[(index / 38809ul) % 197ul] * 197ul +
-		m_perm197[(index / 7645373ul) % 197ul]) * float(0x1.fffffcp-1 / 1506138481ul); // Results in [0,1).
+	return (m_perm197[index % 197ull] * 7645373ull +
+		m_perm197[(index / 197ull) % 197ull] * 38809ull +
+		m_perm197[(index / 38809ull) % 197ull] * 197ull +
+		m_perm197[(index / 7645373ull) % 197ull]) * float(0x1.fffffcp-1 / 1506138481ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton199(const unsigned long long index) const
 {
-	return (m_perm199[index % 199ul] * 7880599ul +
-		m_perm199[(index / 199ul) % 199ul] * 39601ul +
-		m_perm199[(index / 39601ul) % 199ul] * 199ul +
-		m_perm199[(index / 7880599ul) % 199ul]) * float(0x1.fffffcp-1 / 1568239201ul); // Results in [0,1).
+	return (m_perm199[index % 199ull] * 7880599ull +
+		m_perm199[(index / 199ull) % 199ull] * 39601ull +
+		m_perm199[(index / 39601ull) % 199ull] * 199ull +
+		m_perm199[(index / 7880599ull) % 199ull]) * float(0x1.fffffcp-1 / 1568239201ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton211(const unsigned long long index) const
 {
-	return (m_perm211[index % 211ul] * 9393931ul +
-		m_perm211[(index / 211ul) % 211ul] * 44521ul +
-		m_perm211[(index / 44521ul) % 211ul] * 211ul +
-		m_perm211[(index / 9393931ul) % 211ul]) * float(0x1.fffffcp-1 / 1982119441ul); // Results in [0,1).
+	return (m_perm211[index % 211ull] * 9393931ull +
+		m_perm211[(index / 211ull) % 211ull] * 44521ull +
+		m_perm211[(index / 44521ull) % 211ull] * 211ull +
+		m_perm211[(index / 9393931ull) % 211ull]) * float(0x1.fffffcp-1 / 1982119441ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton223(const unsigned long long index) const
 {
-	return (m_perm223[index % 223ul] * 11089567ul +
-		m_perm223[(index / 223ul) % 223ul] * 49729ul +
-		m_perm223[(index / 49729ul) % 223ul] * 223ul +
-		m_perm223[(index / 11089567ul) % 223ul]) * float(0x1.fffffcp-1 / 2472973441ul); // Results in [0,1).
+	return (m_perm223[index % 223ull] * 11089567ull +
+		m_perm223[(index / 223ull) % 223ull] * 49729ull +
+		m_perm223[(index / 49729ull) % 223ull] * 223ull +
+		m_perm223[(index / 11089567ull) % 223ull]) * float(0x1.fffffcp-1 / 2472973441ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton227(const unsigned long long index) const
 {
-	return (m_perm227[index % 227ul] * 11697083ul +
-		m_perm227[(index / 227ul) % 227ul] * 51529ul +
-		m_perm227[(index / 51529ul) % 227ul] * 227ul +
-		m_perm227[(index / 11697083ul) % 227ul]) * float(0x1.fffffcp-1 / 2655237841ul); // Results in [0,1).
+	return (m_perm227[index % 227ull] * 11697083ull +
+		m_perm227[(index / 227ull) % 227ull] * 51529ull +
+		m_perm227[(index / 51529ull) % 227ull] * 227ull +
+		m_perm227[(index / 11697083ull) % 227ull]) * float(0x1.fffffcp-1 / 2655237841ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton229(const unsigned long long index) const
 {
-	return (m_perm229[index % 229ul] * 12008989ul +
-		m_perm229[(index / 229ul) % 229ul] * 52441ul +
-		m_perm229[(index / 52441ul) % 229ul] * 229ul +
-		m_perm229[(index / 12008989ul) % 229ul]) * float(0x1.fffffcp-1 / 2750058481ul); // Results in [0,1).
+	return (m_perm229[index % 229ull] * 12008989ull +
+		m_perm229[(index / 229ull) % 229ull] * 52441ull +
+		m_perm229[(index / 52441ull) % 229ull] * 229ull +
+		m_perm229[(index / 12008989ull) % 229ull]) * float(0x1.fffffcp-1 / 2750058481ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton233(const unsigned long long index) const
 {
-	return (m_perm233[index % 233ul] * 12649337ul +
-		m_perm233[(index / 233ul) % 233ul] * 54289ul +
-		m_perm233[(index / 54289ul) % 233ul] * 233ul +
-		m_perm233[(index / 12649337ul) % 233ul]) * float(0x1.fffffcp-1 / 2947295521ul); // Results in [0,1).
+	return (m_perm233[index % 233ull] * 12649337ull +
+		m_perm233[(index / 233ull) % 233ull] * 54289ull +
+		m_perm233[(index / 54289ull) % 233ull] * 233ull +
+		m_perm233[(index / 12649337ull) % 233ull]) * float(0x1.fffffcp-1 / 2947295521ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton239(const unsigned long long index) const
 {
-	return (m_perm239[index % 239ul] * 13651919ul +
-		m_perm239[(index / 239ul) % 239ul] * 57121ul +
-		m_perm239[(index / 57121ul) % 239ul] * 239ul +
-		m_perm239[(index / 13651919ul) % 239ul]) * float(0x1.fffffcp-1 / 3262808641ul); // Results in [0,1).
+	return (m_perm239[index % 239ull] * 13651919ull +
+		m_perm239[(index / 239ull) % 239ull] * 57121ull +
+		m_perm239[(index / 57121ull) % 239ull] * 239ull +
+		m_perm239[(index / 13651919ull) % 239ull]) * float(0x1.fffffcp-1 / 3262808641ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton241(const unsigned long long index) const
 {
-	return (m_perm241[index % 241ul] * 13997521ul +
-		m_perm241[(index / 241ul) % 241ul] * 58081ul +
-		m_perm241[(index / 58081ul) % 241ul] * 241ul +
-		m_perm241[(index / 13997521ul) % 241ul]) * float(0x1.fffffcp-1 / 3373402561ul); // Results in [0,1).
+	return (m_perm241[index % 241ull] * 13997521ull +
+		m_perm241[(index / 241ull) % 241ull] * 58081ull +
+		m_perm241[(index / 58081ull) % 241ull] * 241ull +
+		m_perm241[(index / 13997521ull) % 241ull]) * float(0x1.fffffcp-1 / 3373402561ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton251(const unsigned long long index) const
 {
-	return (m_perm251[index % 251ul] * 15813251ul +
-		m_perm251[(index / 251ul) % 251ul] * 63001ul +
-		m_perm251[(index / 63001ul) % 251ul] * 251ul +
-		m_perm251[(index / 15813251ul) % 251ul]) * float(0x1.fffffcp-1 / 3969126001ul); // Results in [0,1).
+	return (m_perm251[index % 251ull] * 15813251ull +
+		m_perm251[(index / 251ull) % 251ull] * 63001ull +
+		m_perm251[(index / 63001ull) % 251ull] * 251ull +
+		m_perm251[(index / 15813251ull) % 251ull]) * float(0x1.fffffcp-1 / 3969126001ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton257(const unsigned long long index) const
 {
-	return (m_perm257[index % 257ul] * 66049ul +
-		m_perm257[(index / 257ul) % 257ul] * 257ul +
-		m_perm257[(index / 66049ul) % 257ul]) * float(0x1.fffffcp-1 / 16974593ul); // Results in [0,1).
+	return (m_perm257[index % 257ull] * 66049ull +
+		m_perm257[(index / 257ull) % 257ull] * 257ull +
+		m_perm257[(index / 66049ull) % 257ull]) * float(0x1.fffffcp-1 / 16974593ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton263(const unsigned long long index) const
 {
-	return (m_perm263[index % 263ul] * 69169ul +
-		m_perm263[(index / 263ul) % 263ul] * 263ul +
-		m_perm263[(index / 69169ul) % 263ul]) * float(0x1.fffffcp-1 / 18191447ul); // Results in [0,1).
+	return (m_perm263[index % 263ull] * 69169ull +
+		m_perm263[(index / 263ull) % 263ull] * 263ull +
+		m_perm263[(index / 69169ull) % 263ull]) * float(0x1.fffffcp-1 / 18191447ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton269(const unsigned long long index) const
 {
-	return (m_perm269[index % 269ul] * 72361ul +
-		m_perm269[(index / 269ul) % 269ul] * 269ul +
-		m_perm269[(index / 72361ul) % 269ul]) * float(0x1.fffffcp-1 / 19465109ul); // Results in [0,1).
+	return (m_perm269[index % 269ull] * 72361ull +
+		m_perm269[(index / 269ull) % 269ull] * 269ull +
+		m_perm269[(index / 72361ull) % 269ull]) * float(0x1.fffffcp-1 / 19465109ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton271(const unsigned long long index) const
 {
-	return (m_perm271[index % 271ul] * 73441ul +
-		m_perm271[(index / 271ul) % 271ul] * 271ul +
-		m_perm271[(index / 73441ul) % 271ul]) * float(0x1.fffffcp-1 / 19902511ul); // Results in [0,1).
+	return (m_perm271[index % 271ull] * 73441ull +
+		m_perm271[(index / 271ull) % 271ull] * 271ull +
+		m_perm271[(index / 73441ull) % 271ull]) * float(0x1.fffffcp-1 / 19902511ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton277(const unsigned long long index) const
 {
-	return (m_perm277[index % 277ul] * 76729ul +
-		m_perm277[(index / 277ul) % 277ul] * 277ul +
-		m_perm277[(index / 76729ul) % 277ul]) * float(0x1.fffffcp-1 / 21253933ul); // Results in [0,1).
+	return (m_perm277[index % 277ull] * 76729ull +
+		m_perm277[(index / 277ull) % 277ull] * 277ull +
+		m_perm277[(index / 76729ull) % 277ull]) * float(0x1.fffffcp-1 / 21253933ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton281(const unsigned long long index) const
 {
-	return (m_perm281[index % 281ul] * 78961ul +
-		m_perm281[(index / 281ul) % 281ul] * 281ul +
-		m_perm281[(index / 78961ul) % 281ul]) * float(0x1.fffffcp-1 / 22188041ul); // Results in [0,1).
+	return (m_perm281[index % 281ull] * 78961ull +
+		m_perm281[(index / 281ull) % 281ull] * 281ull +
+		m_perm281[(index / 78961ull) % 281ull]) * float(0x1.fffffcp-1 / 22188041ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton283(const unsigned long long index) const
 {
-	return (m_perm283[index % 283ul] * 80089ul +
-		m_perm283[(index / 283ul) % 283ul] * 283ul +
-		m_perm283[(index / 80089ul) % 283ul]) * float(0x1.fffffcp-1 / 22665187ul); // Results in [0,1).
+	return (m_perm283[index % 283ull] * 80089ull +
+		m_perm283[(index / 283ull) % 283ull] * 283ull +
+		m_perm283[(index / 80089ull) % 283ull]) * float(0x1.fffffcp-1 / 22665187ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton293(const unsigned long long index) const
 {
-	return (m_perm293[index % 293ul] * 85849ul +
-		m_perm293[(index / 293ul) % 293ul] * 293ul +
-		m_perm293[(index / 85849ul) % 293ul]) * float(0x1.fffffcp-1 / 25153757ul); // Results in [0,1).
+	return (m_perm293[index % 293ull] * 85849ull +
+		m_perm293[(index / 293ull) % 293ull] * 293ull +
+		m_perm293[(index / 85849ull) % 293ull]) * float(0x1.fffffcp-1 / 25153757ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton307(const unsigned long long index) const
 {
-	return (m_perm307[index % 307ul] * 94249ul +
-		m_perm307[(index / 307ul) % 307ul] * 307ul +
-		m_perm307[(index / 94249ul) % 307ul]) * float(0x1.fffffcp-1 / 28934443ul); // Results in [0,1).
+	return (m_perm307[index % 307ull] * 94249ull +
+		m_perm307[(index / 307ull) % 307ull] * 307ull +
+		m_perm307[(index / 94249ull) % 307ull]) * float(0x1.fffffcp-1 / 28934443ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton311(const unsigned long long index) const
 {
-	return (m_perm311[index % 311ul] * 96721ul +
-		m_perm311[(index / 311ul) % 311ul] * 311ul +
-		m_perm311[(index / 96721ul) % 311ul]) * float(0x1.fffffcp-1 / 30080231ul); // Results in [0,1).
+	return (m_perm311[index % 311ull] * 96721ull +
+		m_perm311[(index / 311ull) % 311ull] * 311ull +
+		m_perm311[(index / 96721ull) % 311ull]) * float(0x1.fffffcp-1 / 30080231ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton313(const unsigned long long index) const
 {
-	return (m_perm313[index % 313ul] * 97969ul +
-		m_perm313[(index / 313ul) % 313ul] * 313ul +
-		m_perm313[(index / 97969ul) % 313ul]) * float(0x1.fffffcp-1 / 30664297ul); // Results in [0,1).
+	return (m_perm313[index % 313ull] * 97969ull +
+		m_perm313[(index / 313ull) % 313ull] * 313ull +
+		m_perm313[(index / 97969ull) % 313ull]) * float(0x1.fffffcp-1 / 30664297ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton317(const unsigned long long index) const
 {
-	return (m_perm317[index % 317ul] * 100489ul +
-		m_perm317[(index / 317ul) % 317ul] * 317ul +
-		m_perm317[(index / 100489ul) % 317ul]) * float(0x1.fffffcp-1 / 31855013ul); // Results in [0,1).
+	return (m_perm317[index % 317ull] * 100489ull +
+		m_perm317[(index / 317ull) % 317ull] * 317ull +
+		m_perm317[(index / 100489ull) % 317ull]) * float(0x1.fffffcp-1 / 31855013ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton331(const unsigned long long index) const
 {
-	return (m_perm331[index % 331ul] * 109561ul +
-		m_perm331[(index / 331ul) % 331ul] * 331ul +
-		m_perm331[(index / 109561ul) % 331ul]) * float(0x1.fffffcp-1 / 36264691ul); // Results in [0,1).
+	return (m_perm331[index % 331ull] * 109561ull +
+		m_perm331[(index / 331ull) % 331ull] * 331ull +
+		m_perm331[(index / 109561ull) % 331ull]) * float(0x1.fffffcp-1 / 36264691ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton337(const unsigned long long index) const
 {
-	return (m_perm337[index % 337ul] * 113569ul +
-		m_perm337[(index / 337ul) % 337ul] * 337ul +
-		m_perm337[(index / 113569ul) % 337ul]) * float(0x1.fffffcp-1 / 38272753ul); // Results in [0,1).
+	return (m_perm337[index % 337ull] * 113569ull +
+		m_perm337[(index / 337ull) % 337ull] * 337ull +
+		m_perm337[(index / 113569ull) % 337ull]) * float(0x1.fffffcp-1 / 38272753ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton347(const unsigned long long index) const
 {
-	return (m_perm347[index % 347ul] * 120409ul +
-		m_perm347[(index / 347ul) % 347ul] * 347ul +
-		m_perm347[(index / 120409ul) % 347ul]) * float(0x1.fffffcp-1 / 41781923ul); // Results in [0,1).
+	return (m_perm347[index % 347ull] * 120409ull +
+		m_perm347[(index / 347ull) % 347ull] * 347ull +
+		m_perm347[(index / 120409ull) % 347ull]) * float(0x1.fffffcp-1 / 41781923ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton349(const unsigned long long index) const
 {
-	return (m_perm349[index % 349ul] * 121801ul +
-		m_perm349[(index / 349ul) % 349ul] * 349ul +
-		m_perm349[(index / 121801ul) % 349ul]) * float(0x1.fffffcp-1 / 42508549ul); // Results in [0,1).
+	return (m_perm349[index % 349ull] * 121801ull +
+		m_perm349[(index / 349ull) % 349ull] * 349ull +
+		m_perm349[(index / 121801ull) % 349ull]) * float(0x1.fffffcp-1 / 42508549ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton353(const unsigned long long index) const
 {
-	return (m_perm353[index % 353ul] * 124609ul +
-		m_perm353[(index / 353ul) % 353ul] * 353ul +
-		m_perm353[(index / 124609ul) % 353ul]) * float(0x1.fffffcp-1 / 43986977ul); // Results in [0,1).
+	return (m_perm353[index % 353ull] * 124609ull +
+		m_perm353[(index / 353ull) % 353ull] * 353ull +
+		m_perm353[(index / 124609ull) % 353ull]) * float(0x1.fffffcp-1 / 43986977ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton359(const unsigned long long index) const
 {
-	return (m_perm359[index % 359ul] * 128881ul +
-		m_perm359[(index / 359ul) % 359ul] * 359ul +
-		m_perm359[(index / 128881ul) % 359ul]) * float(0x1.fffffcp-1 / 46268279ul); // Results in [0,1).
+	return (m_perm359[index % 359ull] * 128881ull +
+		m_perm359[(index / 359ull) % 359ull] * 359ull +
+		m_perm359[(index / 128881ull) % 359ull]) * float(0x1.fffffcp-1 / 46268279ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton367(const unsigned long long index) const
 {
-	return (m_perm367[index % 367ul] * 134689ul +
-		m_perm367[(index / 367ul) % 367ul] * 367ul +
-		m_perm367[(index / 134689ul) % 367ul]) * float(0x1.fffffcp-1 / 49430863ul); // Results in [0,1).
+	return (m_perm367[index % 367ull] * 134689ull +
+		m_perm367[(index / 367ull) % 367ull] * 367ull +
+		m_perm367[(index / 134689ull) % 367ull]) * float(0x1.fffffcp-1 / 49430863ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton373(const unsigned long long index) const
 {
-	return (m_perm373[index % 373ul] * 139129ul +
-		m_perm373[(index / 373ul) % 373ul] * 373ul +
-		m_perm373[(index / 139129ul) % 373ul]) * float(0x1.fffffcp-1 / 51895117ul); // Results in [0,1).
+	return (m_perm373[index % 373ull] * 139129ull +
+		m_perm373[(index / 373ull) % 373ull] * 373ull +
+		m_perm373[(index / 139129ull) % 373ull]) * float(0x1.fffffcp-1 / 51895117ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton379(const unsigned long long index) const
 {
-	return (m_perm379[index % 379ul] * 143641ul +
-		m_perm379[(index / 379ul) % 379ul] * 379ul +
-		m_perm379[(index / 143641ul) % 379ul]) * float(0x1.fffffcp-1 / 54439939ul); // Results in [0,1).
+	return (m_perm379[index % 379ull] * 143641ull +
+		m_perm379[(index / 379ull) % 379ull] * 379ull +
+		m_perm379[(index / 143641ull) % 379ull]) * float(0x1.fffffcp-1 / 54439939ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton383(const unsigned long long index) const
 {
-	return (m_perm383[index % 383ul] * 146689ul +
-		m_perm383[(index / 383ul) % 383ul] * 383ul +
-		m_perm383[(index / 146689ul) % 383ul]) * float(0x1.fffffcp-1 / 56181887ul); // Results in [0,1).
+	return (m_perm383[index % 383ull] * 146689ull +
+		m_perm383[(index / 383ull) % 383ull] * 383ull +
+		m_perm383[(index / 146689ull) % 383ull]) * float(0x1.fffffcp-1 / 56181887ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton389(const unsigned long long index) const
 {
-	return (m_perm389[index % 389ul] * 151321ul +
-		m_perm389[(index / 389ul) % 389ul] * 389ul +
-		m_perm389[(index / 151321ul) % 389ul]) * float(0x1.fffffcp-1 / 58863869ul); // Results in [0,1).
+	return (m_perm389[index % 389ull] * 151321ull +
+		m_perm389[(index / 389ull) % 389ull] * 389ull +
+		m_perm389[(index / 151321ull) % 389ull]) * float(0x1.fffffcp-1 / 58863869ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton397(const unsigned long long index) const
 {
-	return (m_perm397[index % 397ul] * 157609ul +
-		m_perm397[(index / 397ul) % 397ul] * 397ul +
-		m_perm397[(index / 157609ul) % 397ul]) * float(0x1.fffffcp-1 / 62570773ul); // Results in [0,1).
+	return (m_perm397[index % 397ull] * 157609ull +
+		m_perm397[(index / 397ull) % 397ull] * 397ull +
+		m_perm397[(index / 157609ull) % 397ull]) * float(0x1.fffffcp-1 / 62570773ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton401(const unsigned long long index) const
 {
-	return (m_perm401[index % 401ul] * 160801ul +
-		m_perm401[(index / 401ul) % 401ul] * 401ul +
-		m_perm401[(index / 160801ul) % 401ul]) * float(0x1.fffffcp-1 / 64481201ul); // Results in [0,1).
+	return (m_perm401[index % 401ull] * 160801ull +
+		m_perm401[(index / 401ull) % 401ull] * 401ull +
+		m_perm401[(index / 160801ull) % 401ull]) * float(0x1.fffffcp-1 / 64481201ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton409(const unsigned long long index) const
 {
-	return (m_perm409[index % 409ul] * 167281ul +
-		m_perm409[(index / 409ul) % 409ul] * 409ul +
-		m_perm409[(index / 167281ul) % 409ul]) * float(0x1.fffffcp-1 / 68417929ul); // Results in [0,1).
+	return (m_perm409[index % 409ull] * 167281ull +
+		m_perm409[(index / 409ull) % 409ull] * 409ull +
+		m_perm409[(index / 167281ull) % 409ull]) * float(0x1.fffffcp-1 / 68417929ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton419(const unsigned long long index) const
 {
-	return (m_perm419[index % 419ul] * 175561ul +
-		m_perm419[(index / 419ul) % 419ul] * 419ul +
-		m_perm419[(index / 175561ul) % 419ul]) * float(0x1.fffffcp-1 / 73560059ul); // Results in [0,1).
+	return (m_perm419[index % 419ull] * 175561ull +
+		m_perm419[(index / 419ull) % 419ull] * 419ull +
+		m_perm419[(index / 175561ull) % 419ull]) * float(0x1.fffffcp-1 / 73560059ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton421(const unsigned long long index) const
 {
-	return (m_perm421[index % 421ul] * 177241ul +
-		m_perm421[(index / 421ul) % 421ul] * 421ul +
-		m_perm421[(index / 177241ul) % 421ul]) * float(0x1.fffffcp-1 / 74618461ul); // Results in [0,1).
+	return (m_perm421[index % 421ull] * 177241ull +
+		m_perm421[(index / 421ull) % 421ull] * 421ull +
+		m_perm421[(index / 177241ull) % 421ull]) * float(0x1.fffffcp-1 / 74618461ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton431(const unsigned long long index) const
 {
-	return (m_perm431[index % 431ul] * 185761ul +
-		m_perm431[(index / 431ul) % 431ul] * 431ul +
-		m_perm431[(index / 185761ul) % 431ul]) * float(0x1.fffffcp-1 / 80062991ul); // Results in [0,1).
+	return (m_perm431[index % 431ull] * 185761ull +
+		m_perm431[(index / 431ull) % 431ull] * 431ull +
+		m_perm431[(index / 185761ull) % 431ull]) * float(0x1.fffffcp-1 / 80062991ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton433(const unsigned long long index) const
 {
-	return (m_perm433[index % 433ul] * 187489ul +
-		m_perm433[(index / 433ul) % 433ul] * 433ul +
-		m_perm433[(index / 187489ul) % 433ul]) * float(0x1.fffffcp-1 / 81182737ul); // Results in [0,1).
+	return (m_perm433[index % 433ull] * 187489ull +
+		m_perm433[(index / 433ull) % 433ull] * 433ull +
+		m_perm433[(index / 187489ull) % 433ull]) * float(0x1.fffffcp-1 / 81182737ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton439(const unsigned long long index) const
 {
-	return (m_perm439[index % 439ul] * 192721ul +
-		m_perm439[(index / 439ul) % 439ul] * 439ul +
-		m_perm439[(index / 192721ul) % 439ul]) * float(0x1.fffffcp-1 / 84604519ul); // Results in [0,1).
+	return (m_perm439[index % 439ull] * 192721ull +
+		m_perm439[(index / 439ull) % 439ull] * 439ull +
+		m_perm439[(index / 192721ull) % 439ull]) * float(0x1.fffffcp-1 / 84604519ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton443(const unsigned long long index) const
 {
-	return (m_perm443[index % 443ul] * 196249ul +
-		m_perm443[(index / 443ul) % 443ul] * 443ul +
-		m_perm443[(index / 196249ul) % 443ul]) * float(0x1.fffffcp-1 / 86938307ul); // Results in [0,1).
+	return (m_perm443[index % 443ull] * 196249ull +
+		m_perm443[(index / 443ull) % 443ull] * 443ull +
+		m_perm443[(index / 196249ull) % 443ull]) * float(0x1.fffffcp-1 / 86938307ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton449(const unsigned long long index) const
 {
-	return (m_perm449[index % 449ul] * 201601ul +
-		m_perm449[(index / 449ul) % 449ul] * 449ul +
-		m_perm449[(index / 201601ul) % 449ul]) * float(0x1.fffffcp-1 / 90518849ul); // Results in [0,1).
+	return (m_perm449[index % 449ull] * 201601ull +
+		m_perm449[(index / 449ull) % 449ull] * 449ull +
+		m_perm449[(index / 201601ull) % 449ull]) * float(0x1.fffffcp-1 / 90518849ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton457(const unsigned long long index) const
 {
-	return (m_perm457[index % 457ul] * 208849ul +
-		m_perm457[(index / 457ul) % 457ul] * 457ul +
-		m_perm457[(index / 208849ul) % 457ul]) * float(0x1.fffffcp-1 / 95443993ul); // Results in [0,1).
+	return (m_perm457[index % 457ull] * 208849ull +
+		m_perm457[(index / 457ull) % 457ull] * 457ull +
+		m_perm457[(index / 208849ull) % 457ull]) * float(0x1.fffffcp-1 / 95443993ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton461(const unsigned long long index) const
 {
-	return (m_perm461[index % 461ul] * 212521ul +
-		m_perm461[(index / 461ul) % 461ul] * 461ul +
-		m_perm461[(index / 212521ul) % 461ul]) * float(0x1.fffffcp-1 / 97972181ul); // Results in [0,1).
+	return (m_perm461[index % 461ull] * 212521ull +
+		m_perm461[(index / 461ull) % 461ull] * 461ull +
+		m_perm461[(index / 212521ull) % 461ull]) * float(0x1.fffffcp-1 / 97972181ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton463(const unsigned long long index) const
 {
-	return (m_perm463[index % 463ul] * 214369ul +
-		m_perm463[(index / 463ul) % 463ul] * 463ul +
-		m_perm463[(index / 214369ul) % 463ul]) * float(0x1.fffffcp-1 / 99252847ul); // Results in [0,1).
+	return (m_perm463[index % 463ull] * 214369ull +
+		m_perm463[(index / 463ull) % 463ull] * 463ull +
+		m_perm463[(index / 214369ull) % 463ull]) * float(0x1.fffffcp-1 / 99252847ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton467(const unsigned long long index) const
 {
-	return (m_perm467[index % 467ul] * 218089ul +
-		m_perm467[(index / 467ul) % 467ul] * 467ul +
-		m_perm467[(index / 218089ul) % 467ul]) * float(0x1.fffffcp-1 / 101847563ul); // Results in [0,1).
+	return (m_perm467[index % 467ull] * 218089ull +
+		m_perm467[(index / 467ull) % 467ull] * 467ull +
+		m_perm467[(index / 218089ull) % 467ull]) * float(0x1.fffffcp-1 / 101847563ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton479(const unsigned long long index) const
 {
-	return (m_perm479[index % 479ul] * 229441ul +
-		m_perm479[(index / 479ul) % 479ul] * 479ul +
-		m_perm479[(index / 229441ul) % 479ul]) * float(0x1.fffffcp-1 / 109902239ul); // Results in [0,1).
+	return (m_perm479[index % 479ull] * 229441ull +
+		m_perm479[(index / 479ull) % 479ull] * 479ull +
+		m_perm479[(index / 229441ull) % 479ull]) * float(0x1.fffffcp-1 / 109902239ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton487(const unsigned long long index) const
 {
-	return (m_perm487[index % 487ul] * 237169ul +
-		m_perm487[(index / 487ul) % 487ul] * 487ul +
-		m_perm487[(index / 237169ul) % 487ul]) * float(0x1.fffffcp-1 / 115501303ul); // Results in [0,1).
+	return (m_perm487[index % 487ull] * 237169ull +
+		m_perm487[(index / 487ull) % 487ull] * 487ull +
+		m_perm487[(index / 237169ull) % 487ull]) * float(0x1.fffffcp-1 / 115501303ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton491(const unsigned long long index) const
 {
-	return (m_perm491[index % 491ul] * 241081ul +
-		m_perm491[(index / 491ul) % 491ul] * 491ul +
-		m_perm491[(index / 241081ul) % 491ul]) * float(0x1.fffffcp-1 / 118370771ul); // Results in [0,1).
+	return (m_perm491[index % 491ull] * 241081ull +
+		m_perm491[(index / 491ull) % 491ull] * 491ull +
+		m_perm491[(index / 241081ull) % 491ull]) * float(0x1.fffffcp-1 / 118370771ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton499(const unsigned long long index) const
 {
-	return (m_perm499[index % 499ul] * 249001ul +
-		m_perm499[(index / 499ul) % 499ul] * 499ul +
-		m_perm499[(index / 249001ul) % 499ul]) * float(0x1.fffffcp-1 / 124251499ul); // Results in [0,1).
+	return (m_perm499[index % 499ull] * 249001ull +
+		m_perm499[(index / 499ull) % 499ull] * 499ull +
+		m_perm499[(index / 249001ull) % 499ull]) * float(0x1.fffffcp-1 / 124251499ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton503(const unsigned long long index) const
 {
-	return (m_perm503[index % 503ul] * 253009ul +
-		m_perm503[(index / 503ul) % 503ul] * 503ul +
-		m_perm503[(index / 253009ul) % 503ul]) * float(0x1.fffffcp-1 / 127263527ul); // Results in [0,1).
+	return (m_perm503[index % 503ull] * 253009ull +
+		m_perm503[(index / 503ull) % 503ull] * 503ull +
+		m_perm503[(index / 253009ull) % 503ull]) * float(0x1.fffffcp-1 / 127263527ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton509(const unsigned long long index) const
 {
-	return (m_perm509[index % 509ul] * 259081ul +
-		m_perm509[(index / 509ul) % 509ul] * 509ul +
-		m_perm509[(index / 259081ul) % 509ul]) * float(0x1.fffffcp-1 / 131872229ul); // Results in [0,1).
+	return (m_perm509[index % 509ull] * 259081ull +
+		m_perm509[(index / 509ull) % 509ull] * 509ull +
+		m_perm509[(index / 259081ull) % 509ull]) * float(0x1.fffffcp-1 / 131872229ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton521(const unsigned long long index) const
 {
-	return (m_perm521[index % 521ul] * 271441ul +
-		m_perm521[(index / 521ul) % 521ul] * 521ul +
-		m_perm521[(index / 271441ul) % 521ul]) * float(0x1.fffffcp-1 / 141420761ul); // Results in [0,1).
+	return (m_perm521[index % 521ull] * 271441ull +
+		m_perm521[(index / 521ull) % 521ull] * 521ull +
+		m_perm521[(index / 271441ull) % 521ull]) * float(0x1.fffffcp-1 / 141420761ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton523(const unsigned long long index) const
 {
-	return (m_perm523[index % 523ul] * 273529ul +
-		m_perm523[(index / 523ul) % 523ul] * 523ul +
-		m_perm523[(index / 273529ul) % 523ul]) * float(0x1.fffffcp-1 / 143055667ul); // Results in [0,1).
+	return (m_perm523[index % 523ull] * 273529ull +
+		m_perm523[(index / 523ull) % 523ull] * 523ull +
+		m_perm523[(index / 273529ull) % 523ull]) * float(0x1.fffffcp-1 / 143055667ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton541(const unsigned long long index) const
 {
-	return (m_perm541[index % 541ul] * 292681ul +
-		m_perm541[(index / 541ul) % 541ul] * 541ul +
-		m_perm541[(index / 292681ul) % 541ul]) * float(0x1.fffffcp-1 / 158340421ul); // Results in [0,1).
+	return (m_perm541[index % 541ull] * 292681ull +
+		m_perm541[(index / 541ull) % 541ull] * 541ull +
+		m_perm541[(index / 292681ull) % 541ull]) * float(0x1.fffffcp-1 / 158340421ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton547(const unsigned long long index) const
 {
-	return (m_perm547[index % 547ul] * 299209ul +
-		m_perm547[(index / 547ul) % 547ul] * 547ul +
-		m_perm547[(index / 299209ul) % 547ul]) * float(0x1.fffffcp-1 / 163667323ul); // Results in [0,1).
+	return (m_perm547[index % 547ull] * 299209ull +
+		m_perm547[(index / 547ull) % 547ull] * 547ull +
+		m_perm547[(index / 299209ull) % 547ull]) * float(0x1.fffffcp-1 / 163667323ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton557(const unsigned long long index) const
 {
-	return (m_perm557[index % 557ul] * 310249ul +
-		m_perm557[(index / 557ul) % 557ul] * 557ul +
-		m_perm557[(index / 310249ul) % 557ul]) * float(0x1.fffffcp-1 / 172808693ul); // Results in [0,1).
+	return (m_perm557[index % 557ull] * 310249ull +
+		m_perm557[(index / 557ull) % 557ull] * 557ull +
+		m_perm557[(index / 310249ull) % 557ull]) * float(0x1.fffffcp-1 / 172808693ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton563(const unsigned long long index) const
 {
-	return (m_perm563[index % 563ul] * 316969ul +
-		m_perm563[(index / 563ul) % 563ul] * 563ul +
-		m_perm563[(index / 316969ul) % 563ul]) * float(0x1.fffffcp-1 / 178453547ul); // Results in [0,1).
+	return (m_perm563[index % 563ull] * 316969ull +
+		m_perm563[(index / 563ull) % 563ull] * 563ull +
+		m_perm563[(index / 316969ull) % 563ull]) * float(0x1.fffffcp-1 / 178453547ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton569(const unsigned long long index) const
 {
-	return (m_perm569[index % 569ul] * 323761ul +
-		m_perm569[(index / 569ul) % 569ul] * 569ul +
-		m_perm569[(index / 323761ul) % 569ul]) * float(0x1.fffffcp-1 / 184220009ul); // Results in [0,1).
+	return (m_perm569[index % 569ull] * 323761ull +
+		m_perm569[(index / 569ull) % 569ull] * 569ull +
+		m_perm569[(index / 323761ull) % 569ull]) * float(0x1.fffffcp-1 / 184220009ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton571(const unsigned long long index) const
 {
-	return (m_perm571[index % 571ul] * 326041ul +
-		m_perm571[(index / 571ul) % 571ul] * 571ul +
-		m_perm571[(index / 326041ul) % 571ul]) * float(0x1.fffffcp-1 / 186169411ul); // Results in [0,1).
+	return (m_perm571[index % 571ull] * 326041ull +
+		m_perm571[(index / 571ull) % 571ull] * 571ull +
+		m_perm571[(index / 326041ull) % 571ull]) * float(0x1.fffffcp-1 / 186169411ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton577(const unsigned long long index) const
 {
-	return (m_perm577[index % 577ul] * 332929ul +
-		m_perm577[(index / 577ul) % 577ul] * 577ul +
-		m_perm577[(index / 332929ul) % 577ul]) * float(0x1.fffffcp-1 / 192100033ul); // Results in [0,1).
+	return (m_perm577[index % 577ull] * 332929ull +
+		m_perm577[(index / 577ull) % 577ull] * 577ull +
+		m_perm577[(index / 332929ull) % 577ull]) * float(0x1.fffffcp-1 / 192100033ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton587(const unsigned long long index) const
 {
-	return (m_perm587[index % 587ul] * 344569ul +
-		m_perm587[(index / 587ul) % 587ul] * 587ul +
-		m_perm587[(index / 344569ul) % 587ul]) * float(0x1.fffffcp-1 / 202262003ul); // Results in [0,1).
+	return (m_perm587[index % 587ull] * 344569ull +
+		m_perm587[(index / 587ull) % 587ull] * 587ull +
+		m_perm587[(index / 344569ull) % 587ull]) * float(0x1.fffffcp-1 / 202262003ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton593(const unsigned long long index) const
 {
-	return (m_perm593[index % 593ul] * 351649ul +
-		m_perm593[(index / 593ul) % 593ul] * 593ul +
-		m_perm593[(index / 351649ul) % 593ul]) * float(0x1.fffffcp-1 / 208527857ul); // Results in [0,1).
+	return (m_perm593[index % 593ull] * 351649ull +
+		m_perm593[(index / 593ull) % 593ull] * 593ull +
+		m_perm593[(index / 351649ull) % 593ull]) * float(0x1.fffffcp-1 / 208527857ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton599(const unsigned long long index) const
 {
-	return (m_perm599[index % 599ul] * 358801ul +
-		m_perm599[(index / 599ul) % 599ul] * 599ul +
-		m_perm599[(index / 358801ul) % 599ul]) * float(0x1.fffffcp-1 / 214921799ul); // Results in [0,1).
+	return (m_perm599[index % 599ull] * 358801ull +
+		m_perm599[(index / 599ull) % 599ull] * 599ull +
+		m_perm599[(index / 358801ull) % 599ull]) * float(0x1.fffffcp-1 / 214921799ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton601(const unsigned long long index) const
 {
-	return (m_perm601[index % 601ul] * 361201ul +
-		m_perm601[(index / 601ul) % 601ul] * 601ul +
-		m_perm601[(index / 361201ul) % 601ul]) * float(0x1.fffffcp-1 / 217081801ul); // Results in [0,1).
+	return (m_perm601[index % 601ull] * 361201ull +
+		m_perm601[(index / 601ull) % 601ull] * 601ull +
+		m_perm601[(index / 361201ull) % 601ull]) * float(0x1.fffffcp-1 / 217081801ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton607(const unsigned long long index) const
 {
-	return (m_perm607[index % 607ul] * 368449ul +
-		m_perm607[(index / 607ul) % 607ul] * 607ul +
-		m_perm607[(index / 368449ul) % 607ul]) * float(0x1.fffffcp-1 / 223648543ul); // Results in [0,1).
+	return (m_perm607[index % 607ull] * 368449ull +
+		m_perm607[(index / 607ull) % 607ull] * 607ull +
+		m_perm607[(index / 368449ull) % 607ull]) * float(0x1.fffffcp-1 / 223648543ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton613(const unsigned long long index) const
 {
-	return (m_perm613[index % 613ul] * 375769ul +
-		m_perm613[(index / 613ul) % 613ul] * 613ul +
-		m_perm613[(index / 375769ul) % 613ul]) * float(0x1.fffffcp-1 / 230346397ul); // Results in [0,1).
+	return (m_perm613[index % 613ull] * 375769ull +
+		m_perm613[(index / 613ull) % 613ull] * 613ull +
+		m_perm613[(index / 375769ull) % 613ull]) * float(0x1.fffffcp-1 / 230346397ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton617(const unsigned long long index) const
 {
-	return (m_perm617[index % 617ul] * 380689ul +
-		m_perm617[(index / 617ul) % 617ul] * 617ul +
-		m_perm617[(index / 380689ul) % 617ul]) * float(0x1.fffffcp-1 / 234885113ul); // Results in [0,1).
+	return (m_perm617[index % 617ull] * 380689ull +
+		m_perm617[(index / 617ull) % 617ull] * 617ull +
+		m_perm617[(index / 380689ull) % 617ull]) * float(0x1.fffffcp-1 / 234885113ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton619(const unsigned long long index) const
 {
-	return (m_perm619[index % 619ul] * 383161ul +
-		m_perm619[(index / 619ul) % 619ul] * 619ul +
-		m_perm619[(index / 383161ul) % 619ul]) * float(0x1.fffffcp-1 / 237176659ul); // Results in [0,1).
+	return (m_perm619[index % 619ull] * 383161ull +
+		m_perm619[(index / 619ull) % 619ull] * 619ull +
+		m_perm619[(index / 383161ull) % 619ull]) * float(0x1.fffffcp-1 / 237176659ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton631(const unsigned long long index) const
 {
-	return (m_perm631[index % 631ul] * 398161ul +
-		m_perm631[(index / 631ul) % 631ul] * 631ul +
-		m_perm631[(index / 398161ul) % 631ul]) * float(0x1.fffffcp-1 / 251239591ul); // Results in [0,1).
+	return (m_perm631[index % 631ull] * 398161ull +
+		m_perm631[(index / 631ull) % 631ull] * 631ull +
+		m_perm631[(index / 398161ull) % 631ull]) * float(0x1.fffffcp-1 / 251239591ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton641(const unsigned long long index) const
 {
-	return (m_perm641[index % 641ul] * 410881ul +
-		m_perm641[(index / 641ul) % 641ul] * 641ul +
-		m_perm641[(index / 410881ul) % 641ul]) * float(0x1.fffffcp-1 / 263374721ul); // Results in [0,1).
+	return (m_perm641[index % 641ull] * 410881ull +
+		m_perm641[(index / 641ull) % 641ull] * 641ull +
+		m_perm641[(index / 410881ull) % 641ull]) * float(0x1.fffffcp-1 / 263374721ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton643(const unsigned long long index) const
 {
-	return (m_perm643[index % 643ul] * 413449ul +
-		m_perm643[(index / 643ul) % 643ul] * 643ul +
-		m_perm643[(index / 413449ul) % 643ul]) * float(0x1.fffffcp-1 / 265847707ul); // Results in [0,1).
+	return (m_perm643[index % 643ull] * 413449ull +
+		m_perm643[(index / 643ull) % 643ull] * 643ull +
+		m_perm643[(index / 413449ull) % 643ull]) * float(0x1.fffffcp-1 / 265847707ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton647(const unsigned long long index) const
 {
-	return (m_perm647[index % 647ul] * 418609ul +
-		m_perm647[(index / 647ul) % 647ul] * 647ul +
-		m_perm647[(index / 418609ul) % 647ul]) * float(0x1.fffffcp-1 / 270840023ul); // Results in [0,1).
+	return (m_perm647[index % 647ull] * 418609ull +
+		m_perm647[(index / 647ull) % 647ull] * 647ull +
+		m_perm647[(index / 418609ull) % 647ull]) * float(0x1.fffffcp-1 / 270840023ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton653(const unsigned long long index) const
 {
-	return (m_perm653[index % 653ul] * 426409ul +
-		m_perm653[(index / 653ul) % 653ul] * 653ul +
-		m_perm653[(index / 426409ul) % 653ul]) * float(0x1.fffffcp-1 / 278445077ul); // Results in [0,1).
+	return (m_perm653[index % 653ull] * 426409ull +
+		m_perm653[(index / 653ull) % 653ull] * 653ull +
+		m_perm653[(index / 426409ull) % 653ull]) * float(0x1.fffffcp-1 / 278445077ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton659(const unsigned long long index) const
 {
-	return (m_perm659[index % 659ul] * 434281ul +
-		m_perm659[(index / 659ul) % 659ul] * 659ul +
-		m_perm659[(index / 434281ul) % 659ul]) * float(0x1.fffffcp-1 / 286191179ul); // Results in [0,1).
+	return (m_perm659[index % 659ull] * 434281ull +
+		m_perm659[(index / 659ull) % 659ull] * 659ull +
+		m_perm659[(index / 434281ull) % 659ull]) * float(0x1.fffffcp-1 / 286191179ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton661(const unsigned long long index) const
 {
-	return (m_perm661[index % 661ul] * 436921ul +
-		m_perm661[(index / 661ul) % 661ul] * 661ul +
-		m_perm661[(index / 436921ul) % 661ul]) * float(0x1.fffffcp-1 / 288804781ul); // Results in [0,1).
+	return (m_perm661[index % 661ull] * 436921ull +
+		m_perm661[(index / 661ull) % 661ull] * 661ull +
+		m_perm661[(index / 436921ull) % 661ull]) * float(0x1.fffffcp-1 / 288804781ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton673(const unsigned long long index) const
 {
-	return (m_perm673[index % 673ul] * 452929ul +
-		m_perm673[(index / 673ul) % 673ul] * 673ul +
-		m_perm673[(index / 452929ul) % 673ul]) * float(0x1.fffffcp-1 / 304821217ul); // Results in [0,1).
+	return (m_perm673[index % 673ull] * 452929ull +
+		m_perm673[(index / 673ull) % 673ull] * 673ull +
+		m_perm673[(index / 452929ull) % 673ull]) * float(0x1.fffffcp-1 / 304821217ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton677(const unsigned long long index) const
 {
-	return (m_perm677[index % 677ul] * 458329ul +
-		m_perm677[(index / 677ul) % 677ul] * 677ul +
-		m_perm677[(index / 458329ul) % 677ul]) * float(0x1.fffffcp-1 / 310288733ul); // Results in [0,1).
+	return (m_perm677[index % 677ull] * 458329ull +
+		m_perm677[(index / 677ull) % 677ull] * 677ull +
+		m_perm677[(index / 458329ull) % 677ull]) * float(0x1.fffffcp-1 / 310288733ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton683(const unsigned long long index) const
 {
-	return (m_perm683[index % 683ul] * 466489ul +
-		m_perm683[(index / 683ul) % 683ul] * 683ul +
-		m_perm683[(index / 466489ul) % 683ul]) * float(0x1.fffffcp-1 / 318611987ul); // Results in [0,1).
+	return (m_perm683[index % 683ull] * 466489ull +
+		m_perm683[(index / 683ull) % 683ull] * 683ull +
+		m_perm683[(index / 466489ull) % 683ull]) * float(0x1.fffffcp-1 / 318611987ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton691(const unsigned long long index) const
 {
-	return (m_perm691[index % 691ul] * 477481ul +
-		m_perm691[(index / 691ul) % 691ul] * 691ul +
-		m_perm691[(index / 477481ul) % 691ul]) * float(0x1.fffffcp-1 / 329939371ul); // Results in [0,1).
+	return (m_perm691[index % 691ull] * 477481ull +
+		m_perm691[(index / 691ull) % 691ull] * 691ull +
+		m_perm691[(index / 477481ull) % 691ull]) * float(0x1.fffffcp-1 / 329939371ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton701(const unsigned long long index) const
 {
-	return (m_perm701[index % 701ul] * 491401ul +
-		m_perm701[(index / 701ul) % 701ul] * 701ul +
-		m_perm701[(index / 491401ul) % 701ul]) * float(0x1.fffffcp-1 / 344472101ul); // Results in [0,1).
+	return (m_perm701[index % 701ull] * 491401ull +
+		m_perm701[(index / 701ull) % 701ull] * 701ull +
+		m_perm701[(index / 491401ull) % 701ull]) * float(0x1.fffffcp-1 / 344472101ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton709(const unsigned long long index) const
 {
-	return (m_perm709[index % 709ul] * 502681ul +
-		m_perm709[(index / 709ul) % 709ul] * 709ul +
-		m_perm709[(index / 502681ul) % 709ul]) * float(0x1.fffffcp-1 / 356400829ul); // Results in [0,1).
+	return (m_perm709[index % 709ull] * 502681ull +
+		m_perm709[(index / 709ull) % 709ull] * 709ull +
+		m_perm709[(index / 502681ull) % 709ull]) * float(0x1.fffffcp-1 / 356400829ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton719(const unsigned long long index) const
 {
-	return (m_perm719[index % 719ul] * 516961ul +
-		m_perm719[(index / 719ul) % 719ul] * 719ul +
-		m_perm719[(index / 516961ul) % 719ul]) * float(0x1.fffffcp-1 / 371694959ul); // Results in [0,1).
+	return (m_perm719[index % 719ull] * 516961ull +
+		m_perm719[(index / 719ull) % 719ull] * 719ull +
+		m_perm719[(index / 516961ull) % 719ull]) * float(0x1.fffffcp-1 / 371694959ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton727(const unsigned long long index) const
 {
-	return (m_perm727[index % 727ul] * 528529ul +
-		m_perm727[(index / 727ul) % 727ul] * 727ul +
-		m_perm727[(index / 528529ul) % 727ul]) * float(0x1.fffffcp-1 / 384240583ul); // Results in [0,1).
+	return (m_perm727[index % 727ull] * 528529ull +
+		m_perm727[(index / 727ull) % 727ull] * 727ull +
+		m_perm727[(index / 528529ull) % 727ull]) * float(0x1.fffffcp-1 / 384240583ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton733(const unsigned long long index) const
 {
-	return (m_perm733[index % 733ul] * 537289ul +
-		m_perm733[(index / 733ul) % 733ul] * 733ul +
-		m_perm733[(index / 537289ul) % 733ul]) * float(0x1.fffffcp-1 / 393832837ul); // Results in [0,1).
+	return (m_perm733[index % 733ull] * 537289ull +
+		m_perm733[(index / 733ull) % 733ull] * 733ull +
+		m_perm733[(index / 537289ull) % 733ull]) * float(0x1.fffffcp-1 / 393832837ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton739(const unsigned long long index) const
 {
-	return (m_perm739[index % 739ul] * 546121ul +
-		m_perm739[(index / 739ul) % 739ul] * 739ul +
-		m_perm739[(index / 546121ul) % 739ul]) * float(0x1.fffffcp-1 / 403583419ul); // Results in [0,1).
+	return (m_perm739[index % 739ull] * 546121ull +
+		m_perm739[(index / 739ull) % 739ull] * 739ull +
+		m_perm739[(index / 546121ull) % 739ull]) * float(0x1.fffffcp-1 / 403583419ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton743(const unsigned long long index) const
 {
-	return (m_perm743[index % 743ul] * 552049ul +
-		m_perm743[(index / 743ul) % 743ul] * 743ul +
-		m_perm743[(index / 552049ul) % 743ul]) * float(0x1.fffffcp-1 / 410172407ul); // Results in [0,1).
+	return (m_perm743[index % 743ull] * 552049ull +
+		m_perm743[(index / 743ull) % 743ull] * 743ull +
+		m_perm743[(index / 552049ull) % 743ull]) * float(0x1.fffffcp-1 / 410172407ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton751(const unsigned long long index) const
 {
-	return (m_perm751[index % 751ul] * 564001ul +
-		m_perm751[(index / 751ul) % 751ul] * 751ul +
-		m_perm751[(index / 564001ul) % 751ul]) * float(0x1.fffffcp-1 / 423564751ul); // Results in [0,1).
+	return (m_perm751[index % 751ull] * 564001ull +
+		m_perm751[(index / 751ull) % 751ull] * 751ull +
+		m_perm751[(index / 564001ull) % 751ull]) * float(0x1.fffffcp-1 / 423564751ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton757(const unsigned long long index) const
 {
-	return (m_perm757[index % 757ul] * 573049ul +
-		m_perm757[(index / 757ul) % 757ul] * 757ul +
-		m_perm757[(index / 573049ul) % 757ul]) * float(0x1.fffffcp-1 / 433798093ul); // Results in [0,1).
+	return (m_perm757[index % 757ull] * 573049ull +
+		m_perm757[(index / 757ull) % 757ull] * 757ull +
+		m_perm757[(index / 573049ull) % 757ull]) * float(0x1.fffffcp-1 / 433798093ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton761(const unsigned long long index) const
 {
-	return (m_perm761[index % 761ul] * 579121ul +
-		m_perm761[(index / 761ul) % 761ul] * 761ul +
-		m_perm761[(index / 579121ul) % 761ul]) * float(0x1.fffffcp-1 / 440711081ul); // Results in [0,1).
+	return (m_perm761[index % 761ull] * 579121ull +
+		m_perm761[(index / 761ull) % 761ull] * 761ull +
+		m_perm761[(index / 579121ull) % 761ull]) * float(0x1.fffffcp-1 / 440711081ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton769(const unsigned long long index) const
 {
-	return (m_perm769[index % 769ul] * 591361ul +
-		m_perm769[(index / 769ul) % 769ul] * 769ul +
-		m_perm769[(index / 591361ul) % 769ul]) * float(0x1.fffffcp-1 / 454756609ul); // Results in [0,1).
+	return (m_perm769[index % 769ull] * 591361ull +
+		m_perm769[(index / 769ull) % 769ull] * 769ull +
+		m_perm769[(index / 591361ull) % 769ull]) * float(0x1.fffffcp-1 / 454756609ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton773(const unsigned long long index) const
 {
-	return (m_perm773[index % 773ul] * 597529ul +
-		m_perm773[(index / 773ul) % 773ul] * 773ul +
-		m_perm773[(index / 597529ul) % 773ul]) * float(0x1.fffffcp-1 / 461889917ul); // Results in [0,1).
+	return (m_perm773[index % 773ull] * 597529ull +
+		m_perm773[(index / 773ull) % 773ull] * 773ull +
+		m_perm773[(index / 597529ull) % 773ull]) * float(0x1.fffffcp-1 / 461889917ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton787(const unsigned long long index) const
 {
-	return (m_perm787[index % 787ul] * 619369ul +
-		m_perm787[(index / 787ul) % 787ul] * 787ul +
-		m_perm787[(index / 619369ul) % 787ul]) * float(0x1.fffffcp-1 / 487443403ul); // Results in [0,1).
+	return (m_perm787[index % 787ull] * 619369ull +
+		m_perm787[(index / 787ull) % 787ull] * 787ull +
+		m_perm787[(index / 619369ull) % 787ull]) * float(0x1.fffffcp-1 / 487443403ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton797(const unsigned long long index) const
 {
-	return (m_perm797[index % 797ul] * 635209ul +
-		m_perm797[(index / 797ul) % 797ul] * 797ul +
-		m_perm797[(index / 635209ul) % 797ul]) * float(0x1.fffffcp-1 / 506261573ul); // Results in [0,1).
+	return (m_perm797[index % 797ull] * 635209ull +
+		m_perm797[(index / 797ull) % 797ull] * 797ull +
+		m_perm797[(index / 635209ull) % 797ull]) * float(0x1.fffffcp-1 / 506261573ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton809(const unsigned long long index) const
 {
-	return (m_perm809[index % 809ul] * 654481ul +
-		m_perm809[(index / 809ul) % 809ul] * 809ul +
-		m_perm809[(index / 654481ul) % 809ul]) * float(0x1.fffffcp-1 / 529475129ul); // Results in [0,1).
+	return (m_perm809[index % 809ull] * 654481ull +
+		m_perm809[(index / 809ull) % 809ull] * 809ull +
+		m_perm809[(index / 654481ull) % 809ull]) * float(0x1.fffffcp-1 / 529475129ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton811(const unsigned long long index) const
 {
-	return (m_perm811[index % 811ul] * 657721ul +
-		m_perm811[(index / 811ul) % 811ul] * 811ul +
-		m_perm811[(index / 657721ul) % 811ul]) * float(0x1.fffffcp-1 / 533411731ul); // Results in [0,1).
+	return (m_perm811[index % 811ull] * 657721ull +
+		m_perm811[(index / 811ull) % 811ull] * 811ull +
+		m_perm811[(index / 657721ull) % 811ull]) * float(0x1.fffffcp-1 / 533411731ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton821(const unsigned long long index) const
 {
-	return (m_perm821[index % 821ul] * 674041ul +
-		m_perm821[(index / 821ul) % 821ul] * 821ul +
-		m_perm821[(index / 674041ul) % 821ul]) * float(0x1.fffffcp-1 / 553387661ul); // Results in [0,1).
+	return (m_perm821[index % 821ull] * 674041ull +
+		m_perm821[(index / 821ull) % 821ull] * 821ull +
+		m_perm821[(index / 674041ull) % 821ull]) * float(0x1.fffffcp-1 / 553387661ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton823(const unsigned long long index) const
 {
-	return (m_perm823[index % 823ul] * 677329ul +
-		m_perm823[(index / 823ul) % 823ul] * 823ul +
-		m_perm823[(index / 677329ul) % 823ul]) * float(0x1.fffffcp-1 / 557441767ul); // Results in [0,1).
+	return (m_perm823[index % 823ull] * 677329ull +
+		m_perm823[(index / 823ull) % 823ull] * 823ull +
+		m_perm823[(index / 677329ull) % 823ull]) * float(0x1.fffffcp-1 / 557441767ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton827(const unsigned long long index) const
 {
-	return (m_perm827[index % 827ul] * 683929ul +
-		m_perm827[(index / 827ul) % 827ul] * 827ul +
-		m_perm827[(index / 683929ul) % 827ul]) * float(0x1.fffffcp-1 / 565609283ul); // Results in [0,1).
+	return (m_perm827[index % 827ull] * 683929ull +
+		m_perm827[(index / 827ull) % 827ull] * 827ull +
+		m_perm827[(index / 683929ull) % 827ull]) * float(0x1.fffffcp-1 / 565609283ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton829(const unsigned long long index) const
 {
-	return (m_perm829[index % 829ul] * 687241ul +
-		m_perm829[(index / 829ul) % 829ul] * 829ul +
-		m_perm829[(index / 687241ul) % 829ul]) * float(0x1.fffffcp-1 / 569722789ul); // Results in [0,1).
+	return (m_perm829[index % 829ull] * 687241ull +
+		m_perm829[(index / 829ull) % 829ull] * 829ull +
+		m_perm829[(index / 687241ull) % 829ull]) * float(0x1.fffffcp-1 / 569722789ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton839(const unsigned long long index) const
 {
-	return (m_perm839[index % 839ul] * 703921ul +
-		m_perm839[(index / 839ul) % 839ul] * 839ul +
-		m_perm839[(index / 703921ul) % 839ul]) * float(0x1.fffffcp-1 / 590589719ul); // Results in [0,1).
+	return (m_perm839[index % 839ull] * 703921ull +
+		m_perm839[(index / 839ull) % 839ull] * 839ull +
+		m_perm839[(index / 703921ull) % 839ull]) * float(0x1.fffffcp-1 / 590589719ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton853(const unsigned long long index) const
 {
-	return (m_perm853[index % 853ul] * 727609ul +
-		m_perm853[(index / 853ul) % 853ul] * 853ul +
-		m_perm853[(index / 727609ul) % 853ul]) * float(0x1.fffffcp-1 / 620650477ul); // Results in [0,1).
+	return (m_perm853[index % 853ull] * 727609ull +
+		m_perm853[(index / 853ull) % 853ull] * 853ull +
+		m_perm853[(index / 727609ull) % 853ull]) * float(0x1.fffffcp-1 / 620650477ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton857(const unsigned long long index) const
 {
-	return (m_perm857[index % 857ul] * 734449ul +
-		m_perm857[(index / 857ul) % 857ul] * 857ul +
-		m_perm857[(index / 734449ul) % 857ul]) * float(0x1.fffffcp-1 / 629422793ul); // Results in [0,1).
+	return (m_perm857[index % 857ull] * 734449ull +
+		m_perm857[(index / 857ull) % 857ull] * 857ull +
+		m_perm857[(index / 734449ull) % 857ull]) * float(0x1.fffffcp-1 / 629422793ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton859(const unsigned long long index) const
 {
-	return (m_perm859[index % 859ul] * 737881ul +
-		m_perm859[(index / 859ul) % 859ul] * 859ul +
-		m_perm859[(index / 737881ul) % 859ul]) * float(0x1.fffffcp-1 / 633839779ul); // Results in [0,1).
+	return (m_perm859[index % 859ull] * 737881ull +
+		m_perm859[(index / 859ull) % 859ull] * 859ull +
+		m_perm859[(index / 737881ull) % 859ull]) * float(0x1.fffffcp-1 / 633839779ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton863(const unsigned long long index) const
 {
-	return (m_perm863[index % 863ul] * 744769ul +
-		m_perm863[(index / 863ul) % 863ul] * 863ul +
-		m_perm863[(index / 744769ul) % 863ul]) * float(0x1.fffffcp-1 / 642735647ul); // Results in [0,1).
+	return (m_perm863[index % 863ull] * 744769ull +
+		m_perm863[(index / 863ull) % 863ull] * 863ull +
+		m_perm863[(index / 744769ull) % 863ull]) * float(0x1.fffffcp-1 / 642735647ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton877(const unsigned long long index) const
 {
-	return (m_perm877[index % 877ul] * 769129ul +
-		m_perm877[(index / 877ul) % 877ul] * 877ul +
-		m_perm877[(index / 769129ul) % 877ul]) * float(0x1.fffffcp-1 / 674526133ul); // Results in [0,1).
+	return (m_perm877[index % 877ull] * 769129ull +
+		m_perm877[(index / 877ull) % 877ull] * 877ull +
+		m_perm877[(index / 769129ull) % 877ull]) * float(0x1.fffffcp-1 / 674526133ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton881(const unsigned long long index) const
 {
-	return (m_perm881[index % 881ul] * 776161ul +
-		m_perm881[(index / 881ul) % 881ul] * 881ul +
-		m_perm881[(index / 776161ul) % 881ul]) * float(0x1.fffffcp-1 / 683797841ul); // Results in [0,1).
+	return (m_perm881[index % 881ull] * 776161ull +
+		m_perm881[(index / 881ull) % 881ull] * 881ull +
+		m_perm881[(index / 776161ull) % 881ull]) * float(0x1.fffffcp-1 / 683797841ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton883(const unsigned long long index) const
 {
-	return (m_perm883[index % 883ul] * 779689ul +
-		m_perm883[(index / 883ul) % 883ul] * 883ul +
-		m_perm883[(index / 779689ul) % 883ul]) * float(0x1.fffffcp-1 / 688465387ul); // Results in [0,1).
+	return (m_perm883[index % 883ull] * 779689ull +
+		m_perm883[(index / 883ull) % 883ull] * 883ull +
+		m_perm883[(index / 779689ull) % 883ull]) * float(0x1.fffffcp-1 / 688465387ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton887(const unsigned long long index) const
 {
-	return (m_perm887[index % 887ul] * 786769ul +
-		m_perm887[(index / 887ul) % 887ul] * 887ul +
-		m_perm887[(index / 786769ul) % 887ul]) * float(0x1.fffffcp-1 / 697864103ul); // Results in [0,1).
+	return (m_perm887[index % 887ull] * 786769ull +
+		m_perm887[(index / 887ull) % 887ull] * 887ull +
+		m_perm887[(index / 786769ull) % 887ull]) * float(0x1.fffffcp-1 / 697864103ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton907(const unsigned long long index) const
 {
-	return (m_perm907[index % 907ul] * 822649ul +
-		m_perm907[(index / 907ul) % 907ul] * 907ul +
-		m_perm907[(index / 822649ul) % 907ul]) * float(0x1.fffffcp-1 / 746142643ul); // Results in [0,1).
+	return (m_perm907[index % 907ull] * 822649ull +
+		m_perm907[(index / 907ull) % 907ull] * 907ull +
+		m_perm907[(index / 822649ull) % 907ull]) * float(0x1.fffffcp-1 / 746142643ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton911(const unsigned long long index) const
 {
-	return (m_perm911[index % 911ul] * 829921ul +
-		m_perm911[(index / 911ul) % 911ul] * 911ul +
-		m_perm911[(index / 829921ul) % 911ul]) * float(0x1.fffffcp-1 / 756058031ul); // Results in [0,1).
+	return (m_perm911[index % 911ull] * 829921ull +
+		m_perm911[(index / 911ull) % 911ull] * 911ull +
+		m_perm911[(index / 829921ull) % 911ull]) * float(0x1.fffffcp-1 / 756058031ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton919(const unsigned long long index) const
 {
-	return (m_perm919[index % 919ul] * 844561ul +
-		m_perm919[(index / 919ul) % 919ul] * 919ul +
-		m_perm919[(index / 844561ul) % 919ul]) * float(0x1.fffffcp-1 / 776151559ul); // Results in [0,1).
+	return (m_perm919[index % 919ull] * 844561ull +
+		m_perm919[(index / 919ull) % 919ull] * 919ull +
+		m_perm919[(index / 844561ull) % 919ull]) * float(0x1.fffffcp-1 / 776151559ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton929(const unsigned long long index) const
 {
-	return (m_perm929[index % 929ul] * 863041ul +
-		m_perm929[(index / 929ul) % 929ul] * 929ul +
-		m_perm929[(index / 863041ul) % 929ul]) * float(0x1.fffffcp-1 / 801765089ul); // Results in [0,1).
+	return (m_perm929[index % 929ull] * 863041ull +
+		m_perm929[(index / 929ull) % 929ull] * 929ull +
+		m_perm929[(index / 863041ull) % 929ull]) * float(0x1.fffffcp-1 / 801765089ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton937(const unsigned long long index) const
 {
-	return (m_perm937[index % 937ul] * 877969ul +
-		m_perm937[(index / 937ul) % 937ul] * 937ul +
-		m_perm937[(index / 877969ul) % 937ul]) * float(0x1.fffffcp-1 / 822656953ul); // Results in [0,1).
+	return (m_perm937[index % 937ull] * 877969ull +
+		m_perm937[(index / 937ull) % 937ull] * 937ull +
+		m_perm937[(index / 877969ull) % 937ull]) * float(0x1.fffffcp-1 / 822656953ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton941(const unsigned long long index) const
 {
-	return (m_perm941[index % 941ul] * 885481ul +
-		m_perm941[(index / 941ul) % 941ul] * 941ul +
-		m_perm941[(index / 885481ul) % 941ul]) * float(0x1.fffffcp-1 / 833237621ul); // Results in [0,1).
+	return (m_perm941[index % 941ull] * 885481ull +
+		m_perm941[(index / 941ull) % 941ull] * 941ull +
+		m_perm941[(index / 885481ull) % 941ull]) * float(0x1.fffffcp-1 / 833237621ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton947(const unsigned long long index) const
 {
-	return (m_perm947[index % 947ul] * 896809ul +
-		m_perm947[(index / 947ul) % 947ul] * 947ul +
-		m_perm947[(index / 896809ul) % 947ul]) * float(0x1.fffffcp-1 / 849278123ul); // Results in [0,1).
+	return (m_perm947[index % 947ull] * 896809ull +
+		m_perm947[(index / 947ull) % 947ull] * 947ull +
+		m_perm947[(index / 896809ull) % 947ull]) * float(0x1.fffffcp-1 / 849278123ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton953(const unsigned long long index) const
 {
-	return (m_perm953[index % 953ul] * 908209ul +
-		m_perm953[(index / 953ul) % 953ul] * 953ul +
-		m_perm953[(index / 908209ul) % 953ul]) * float(0x1.fffffcp-1 / 865523177ul); // Results in [0,1).
+	return (m_perm953[index % 953ull] * 908209ull +
+		m_perm953[(index / 953ull) % 953ull] * 953ull +
+		m_perm953[(index / 908209ull) % 953ull]) * float(0x1.fffffcp-1 / 865523177ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton967(const unsigned long long index) const
 {
-	return (m_perm967[index % 967ul] * 935089ul +
-		m_perm967[(index / 967ul) % 967ul] * 967ul +
-		m_perm967[(index / 935089ul) % 967ul]) * float(0x1.fffffcp-1 / 904231063ul); // Results in [0,1).
+	return (m_perm967[index % 967ull] * 935089ull +
+		m_perm967[(index / 967ull) % 967ull] * 967ull +
+		m_perm967[(index / 935089ull) % 967ull]) * float(0x1.fffffcp-1 / 904231063ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton971(const unsigned long long index) const
 {
-	return (m_perm971[index % 971ul] * 942841ul +
-		m_perm971[(index / 971ul) % 971ul] * 971ul +
-		m_perm971[(index / 942841ul) % 971ul]) * float(0x1.fffffcp-1 / 915498611ul); // Results in [0,1).
+	return (m_perm971[index % 971ull] * 942841ull +
+		m_perm971[(index / 971ull) % 971ull] * 971ull +
+		m_perm971[(index / 942841ull) % 971ull]) * float(0x1.fffffcp-1 / 915498611ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton977(const unsigned long long index) const
 {
-	return (m_perm977[index % 977ul] * 954529ul +
-		m_perm977[(index / 977ul) % 977ul] * 977ul +
-		m_perm977[(index / 954529ul) % 977ul]) * float(0x1.fffffcp-1 / 932574833ul); // Results in [0,1).
+	return (m_perm977[index % 977ull] * 954529ull +
+		m_perm977[(index / 977ull) % 977ull] * 977ull +
+		m_perm977[(index / 954529ull) % 977ull]) * float(0x1.fffffcp-1 / 932574833ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton983(const unsigned long long index) const
 {
-	return (m_perm983[index % 983ul] * 966289ul +
-		m_perm983[(index / 983ul) % 983ul] * 983ul +
-		m_perm983[(index / 966289ul) % 983ul]) * float(0x1.fffffcp-1 / 949862087ul); // Results in [0,1).
+	return (m_perm983[index % 983ull] * 966289ull +
+		m_perm983[(index / 983ull) % 983ull] * 983ull +
+		m_perm983[(index / 966289ull) % 983ull]) * float(0x1.fffffcp-1 / 949862087ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton991(const unsigned long long index) const
 {
-	return (m_perm991[index % 991ul] * 982081ul +
-		m_perm991[(index / 991ul) % 991ul] * 991ul +
-		m_perm991[(index / 982081ul) % 991ul]) * float(0x1.fffffcp-1 / 973242271ul); // Results in [0,1).
+	return (m_perm991[index % 991ull] * 982081ull +
+		m_perm991[(index / 991ull) % 991ull] * 991ull +
+		m_perm991[(index / 982081ull) % 991ull]) * float(0x1.fffffcp-1 / 973242271ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton997(const unsigned long long index) const
 {
-	return (m_perm997[index % 997ul] * 994009ul +
-		m_perm997[(index / 997ul) % 997ul] * 997ul +
-		m_perm997[(index / 994009ul) % 997ul]) * float(0x1.fffffcp-1 / 991026973ul); // Results in [0,1).
+	return (m_perm997[index % 997ull] * 994009ull +
+		m_perm997[(index / 997ull) % 997ull] * 997ull +
+		m_perm997[(index / 994009ull) % 997ull]) * float(0x1.fffffcp-1 / 991026973ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1009(const unsigned long long index) const
 {
-	return (m_perm1009[index % 1009ul] * 1018081ul +
-		m_perm1009[(index / 1009ul) % 1009ul] * 1009ul +
-		m_perm1009[(index / 1018081ul) % 1009ul]) * float(0x1.fffffcp-1 / 1027243729ul); // Results in [0,1).
+	return (m_perm1009[index % 1009ull] * 1018081ull +
+		m_perm1009[(index / 1009ull) % 1009ull] * 1009ull +
+		m_perm1009[(index / 1018081ull) % 1009ull]) * float(0x1.fffffcp-1 / 1027243729ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1013(const unsigned long long index) const
 {
-	return (m_perm1013[index % 1013ul] * 1026169ul +
-		m_perm1013[(index / 1013ul) % 1013ul] * 1013ul +
-		m_perm1013[(index / 1026169ul) % 1013ul]) * float(0x1.fffffcp-1 / 1039509197ul); // Results in [0,1).
+	return (m_perm1013[index % 1013ull] * 1026169ull +
+		m_perm1013[(index / 1013ull) % 1013ull] * 1013ull +
+		m_perm1013[(index / 1026169ull) % 1013ull]) * float(0x1.fffffcp-1 / 1039509197ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1019(const unsigned long long index) const
 {
-	return (m_perm1019[index % 1019ul] * 1038361ul +
-		m_perm1019[(index / 1019ul) % 1019ul] * 1019ul +
-		m_perm1019[(index / 1038361ul) % 1019ul]) * float(0x1.fffffcp-1 / 1058089859ul); // Results in [0,1).
+	return (m_perm1019[index % 1019ull] * 1038361ull +
+		m_perm1019[(index / 1019ull) % 1019ull] * 1019ull +
+		m_perm1019[(index / 1038361ull) % 1019ull]) * float(0x1.fffffcp-1 / 1058089859ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1021(const unsigned long long index) const
 {
-	return (m_perm1021[index % 1021ul] * 1042441ul +
-		m_perm1021[(index / 1021ul) % 1021ul] * 1021ul +
-		m_perm1021[(index / 1042441ul) % 1021ul]) * float(0x1.fffffcp-1 / 1064332261ul); // Results in [0,1).
+	return (m_perm1021[index % 1021ull] * 1042441ull +
+		m_perm1021[(index / 1021ull) % 1021ull] * 1021ull +
+		m_perm1021[(index / 1042441ull) % 1021ull]) * float(0x1.fffffcp-1 / 1064332261ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1031(const unsigned long long index) const
 {
-	return (m_perm1031[index % 1031ul] * 1062961ul +
-		m_perm1031[(index / 1031ul) % 1031ul] * 1031ul +
-		m_perm1031[(index / 1062961ul) % 1031ul]) * float(0x1.fffffcp-1 / 1095912791ul); // Results in [0,1).
+	return (m_perm1031[index % 1031ull] * 1062961ull +
+		m_perm1031[(index / 1031ull) % 1031ull] * 1031ull +
+		m_perm1031[(index / 1062961ull) % 1031ull]) * float(0x1.fffffcp-1 / 1095912791ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1033(const unsigned long long index) const
 {
-	return (m_perm1033[index % 1033ul] * 1067089ul +
-		m_perm1033[(index / 1033ul) % 1033ul] * 1033ul +
-		m_perm1033[(index / 1067089ul) % 1033ul]) * float(0x1.fffffcp-1 / 1102302937ul); // Results in [0,1).
+	return (m_perm1033[index % 1033ull] * 1067089ull +
+		m_perm1033[(index / 1033ull) % 1033ull] * 1033ull +
+		m_perm1033[(index / 1067089ull) % 1033ull]) * float(0x1.fffffcp-1 / 1102302937ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1039(const unsigned long long index) const
 {
-	return (m_perm1039[index % 1039ul] * 1079521ul +
-		m_perm1039[(index / 1039ul) % 1039ul] * 1039ul +
-		m_perm1039[(index / 1079521ul) % 1039ul]) * float(0x1.fffffcp-1 / 1121622319ul); // Results in [0,1).
+	return (m_perm1039[index % 1039ull] * 1079521ull +
+		m_perm1039[(index / 1039ull) % 1039ull] * 1039ull +
+		m_perm1039[(index / 1079521ull) % 1039ull]) * float(0x1.fffffcp-1 / 1121622319ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1049(const unsigned long long index) const
 {
-	return (m_perm1049[index % 1049ul] * 1100401ul +
-		m_perm1049[(index / 1049ul) % 1049ul] * 1049ul +
-		m_perm1049[(index / 1100401ul) % 1049ul]) * float(0x1.fffffcp-1 / 1154320649ul); // Results in [0,1).
+	return (m_perm1049[index % 1049ull] * 1100401ull +
+		m_perm1049[(index / 1049ull) % 1049ull] * 1049ull +
+		m_perm1049[(index / 1100401ull) % 1049ull]) * float(0x1.fffffcp-1 / 1154320649ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1051(const unsigned long long index) const
 {
-	return (m_perm1051[index % 1051ul] * 1104601ul +
-		m_perm1051[(index / 1051ul) % 1051ul] * 1051ul +
-		m_perm1051[(index / 1104601ul) % 1051ul]) * float(0x1.fffffcp-1 / 1160935651ul); // Results in [0,1).
+	return (m_perm1051[index % 1051ull] * 1104601ull +
+		m_perm1051[(index / 1051ull) % 1051ull] * 1051ull +
+		m_perm1051[(index / 1104601ull) % 1051ull]) * float(0x1.fffffcp-1 / 1160935651ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1061(const unsigned long long index) const
 {
-	return (m_perm1061[index % 1061ul] * 1125721ul +
-		m_perm1061[(index / 1061ul) % 1061ul] * 1061ul +
-		m_perm1061[(index / 1125721ul) % 1061ul]) * float(0x1.fffffcp-1 / 1194389981ul); // Results in [0,1).
+	return (m_perm1061[index % 1061ull] * 1125721ull +
+		m_perm1061[(index / 1061ull) % 1061ull] * 1061ull +
+		m_perm1061[(index / 1125721ull) % 1061ull]) * float(0x1.fffffcp-1 / 1194389981ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1063(const unsigned long long index) const
 {
-	return (m_perm1063[index % 1063ul] * 1129969ul +
-		m_perm1063[(index / 1063ul) % 1063ul] * 1063ul +
-		m_perm1063[(index / 1129969ul) % 1063ul]) * float(0x1.fffffcp-1 / 1201157047ul); // Results in [0,1).
+	return (m_perm1063[index % 1063ull] * 1129969ull +
+		m_perm1063[(index / 1063ull) % 1063ull] * 1063ull +
+		m_perm1063[(index / 1129969ull) % 1063ull]) * float(0x1.fffffcp-1 / 1201157047ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1069(const unsigned long long index) const
 {
-	return (m_perm1069[index % 1069ul] * 1142761ul +
-		m_perm1069[(index / 1069ul) % 1069ul] * 1069ul +
-		m_perm1069[(index / 1142761ul) % 1069ul]) * float(0x1.fffffcp-1 / 1221611509ul); // Results in [0,1).
+	return (m_perm1069[index % 1069ull] * 1142761ull +
+		m_perm1069[(index / 1069ull) % 1069ull] * 1069ull +
+		m_perm1069[(index / 1142761ull) % 1069ull]) * float(0x1.fffffcp-1 / 1221611509ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1087(const unsigned long long index) const
 {
-	return (m_perm1087[index % 1087ul] * 1181569ul +
-		m_perm1087[(index / 1087ul) % 1087ul] * 1087ul +
-		m_perm1087[(index / 1181569ul) % 1087ul]) * float(0x1.fffffcp-1 / 1284365503ul); // Results in [0,1).
+	return (m_perm1087[index % 1087ull] * 1181569ull +
+		m_perm1087[(index / 1087ull) % 1087ull] * 1087ull +
+		m_perm1087[(index / 1181569ull) % 1087ull]) * float(0x1.fffffcp-1 / 1284365503ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1091(const unsigned long long index) const
 {
-	return (m_perm1091[index % 1091ul] * 1190281ul +
-		m_perm1091[(index / 1091ul) % 1091ul] * 1091ul +
-		m_perm1091[(index / 1190281ul) % 1091ul]) * float(0x1.fffffcp-1 / 1298596571ul); // Results in [0,1).
+	return (m_perm1091[index % 1091ull] * 1190281ull +
+		m_perm1091[(index / 1091ull) % 1091ull] * 1091ull +
+		m_perm1091[(index / 1190281ull) % 1091ull]) * float(0x1.fffffcp-1 / 1298596571ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1093(const unsigned long long index) const
 {
-	return (m_perm1093[index % 1093ul] * 1194649ul +
-		m_perm1093[(index / 1093ul) % 1093ul] * 1093ul +
-		m_perm1093[(index / 1194649ul) % 1093ul]) * float(0x1.fffffcp-1 / 1305751357ul); // Results in [0,1).
+	return (m_perm1093[index % 1093ull] * 1194649ull +
+		m_perm1093[(index / 1093ull) % 1093ull] * 1093ull +
+		m_perm1093[(index / 1194649ull) % 1093ull]) * float(0x1.fffffcp-1 / 1305751357ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1097(const unsigned long long index) const
 {
-	return (m_perm1097[index % 1097ul] * 1203409ul +
-		m_perm1097[(index / 1097ul) % 1097ul] * 1097ul +
-		m_perm1097[(index / 1203409ul) % 1097ul]) * float(0x1.fffffcp-1 / 1320139673ul); // Results in [0,1).
+	return (m_perm1097[index % 1097ull] * 1203409ull +
+		m_perm1097[(index / 1097ull) % 1097ull] * 1097ull +
+		m_perm1097[(index / 1203409ull) % 1097ull]) * float(0x1.fffffcp-1 / 1320139673ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1103(const unsigned long long index) const
 {
-	return (m_perm1103[index % 1103ul] * 1216609ul +
-		m_perm1103[(index / 1103ul) % 1103ul] * 1103ul +
-		m_perm1103[(index / 1216609ul) % 1103ul]) * float(0x1.fffffcp-1 / 1341919727ul); // Results in [0,1).
+	return (m_perm1103[index % 1103ull] * 1216609ull +
+		m_perm1103[(index / 1103ull) % 1103ull] * 1103ull +
+		m_perm1103[(index / 1216609ull) % 1103ull]) * float(0x1.fffffcp-1 / 1341919727ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1109(const unsigned long long index) const
 {
-	return (m_perm1109[index % 1109ul] * 1229881ul +
-		m_perm1109[(index / 1109ul) % 1109ul] * 1109ul +
-		m_perm1109[(index / 1229881ul) % 1109ul]) * float(0x1.fffffcp-1 / 1363938029ul); // Results in [0,1).
+	return (m_perm1109[index % 1109ull] * 1229881ull +
+		m_perm1109[(index / 1109ull) % 1109ull] * 1109ull +
+		m_perm1109[(index / 1229881ull) % 1109ull]) * float(0x1.fffffcp-1 / 1363938029ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1117(const unsigned long long index) const
 {
-	return (m_perm1117[index % 1117ul] * 1247689ul +
-		m_perm1117[(index / 1117ul) % 1117ul] * 1117ul +
-		m_perm1117[(index / 1247689ul) % 1117ul]) * float(0x1.fffffcp-1 / 1393668613ul); // Results in [0,1).
+	return (m_perm1117[index % 1117ull] * 1247689ull +
+		m_perm1117[(index / 1117ull) % 1117ull] * 1117ull +
+		m_perm1117[(index / 1247689ull) % 1117ull]) * float(0x1.fffffcp-1 / 1393668613ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1123(const unsigned long long index) const
 {
-	return (m_perm1123[index % 1123ul] * 1261129ul +
-		m_perm1123[(index / 1123ul) % 1123ul] * 1123ul +
-		m_perm1123[(index / 1261129ul) % 1123ul]) * float(0x1.fffffcp-1 / 1416247867ul); // Results in [0,1).
+	return (m_perm1123[index % 1123ull] * 1261129ull +
+		m_perm1123[(index / 1123ull) % 1123ull] * 1123ull +
+		m_perm1123[(index / 1261129ull) % 1123ull]) * float(0x1.fffffcp-1 / 1416247867ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1129(const unsigned long long index) const
 {
-	return (m_perm1129[index % 1129ul] * 1274641ul +
-		m_perm1129[(index / 1129ul) % 1129ul] * 1129ul +
-		m_perm1129[(index / 1274641ul) % 1129ul]) * float(0x1.fffffcp-1 / 1439069689ul); // Results in [0,1).
+	return (m_perm1129[index % 1129ull] * 1274641ull +
+		m_perm1129[(index / 1129ull) % 1129ull] * 1129ull +
+		m_perm1129[(index / 1274641ull) % 1129ull]) * float(0x1.fffffcp-1 / 1439069689ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1151(const unsigned long long index) const
 {
-	return (m_perm1151[index % 1151ul] * 1324801ul +
-		m_perm1151[(index / 1151ul) % 1151ul] * 1151ul +
-		m_perm1151[(index / 1324801ul) % 1151ul]) * float(0x1.fffffcp-1 / 1524845951ul); // Results in [0,1).
+	return (m_perm1151[index % 1151ull] * 1324801ull +
+		m_perm1151[(index / 1151ull) % 1151ull] * 1151ull +
+		m_perm1151[(index / 1324801ull) % 1151ull]) * float(0x1.fffffcp-1 / 1524845951ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1153(const unsigned long long index) const
 {
-	return (m_perm1153[index % 1153ul] * 1329409ul +
-		m_perm1153[(index / 1153ul) % 1153ul] * 1153ul +
-		m_perm1153[(index / 1329409ul) % 1153ul]) * float(0x1.fffffcp-1 / 1532808577ul); // Results in [0,1).
+	return (m_perm1153[index % 1153ull] * 1329409ull +
+		m_perm1153[(index / 1153ull) % 1153ull] * 1153ull +
+		m_perm1153[(index / 1329409ull) % 1153ull]) * float(0x1.fffffcp-1 / 1532808577ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1163(const unsigned long long index) const
 {
-	return (m_perm1163[index % 1163ul] * 1352569ul +
-		m_perm1163[(index / 1163ul) % 1163ul] * 1163ul +
-		m_perm1163[(index / 1352569ul) % 1163ul]) * float(0x1.fffffcp-1 / 1573037747ul); // Results in [0,1).
+	return (m_perm1163[index % 1163ull] * 1352569ull +
+		m_perm1163[(index / 1163ull) % 1163ull] * 1163ull +
+		m_perm1163[(index / 1352569ull) % 1163ull]) * float(0x1.fffffcp-1 / 1573037747ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1171(const unsigned long long index) const
 {
-	return (m_perm1171[index % 1171ul] * 1371241ul +
-		m_perm1171[(index / 1171ul) % 1171ul] * 1171ul +
-		m_perm1171[(index / 1371241ul) % 1171ul]) * float(0x1.fffffcp-1 / 1605723211ul); // Results in [0,1).
+	return (m_perm1171[index % 1171ull] * 1371241ull +
+		m_perm1171[(index / 1171ull) % 1171ull] * 1171ull +
+		m_perm1171[(index / 1371241ull) % 1171ull]) * float(0x1.fffffcp-1 / 1605723211ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1181(const unsigned long long index) const
 {
-	return (m_perm1181[index % 1181ul] * 1394761ul +
-		m_perm1181[(index / 1181ul) % 1181ul] * 1181ul +
-		m_perm1181[(index / 1394761ul) % 1181ul]) * float(0x1.fffffcp-1 / 1647212741ul); // Results in [0,1).
+	return (m_perm1181[index % 1181ull] * 1394761ull +
+		m_perm1181[(index / 1181ull) % 1181ull] * 1181ull +
+		m_perm1181[(index / 1394761ull) % 1181ull]) * float(0x1.fffffcp-1 / 1647212741ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1187(const unsigned long long index) const
 {
-	return (m_perm1187[index % 1187ul] * 1408969ul +
-		m_perm1187[(index / 1187ul) % 1187ul] * 1187ul +
-		m_perm1187[(index / 1408969ul) % 1187ul]) * float(0x1.fffffcp-1 / 1672446203ul); // Results in [0,1).
+	return (m_perm1187[index % 1187ull] * 1408969ull +
+		m_perm1187[(index / 1187ull) % 1187ull] * 1187ull +
+		m_perm1187[(index / 1408969ull) % 1187ull]) * float(0x1.fffffcp-1 / 1672446203ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1193(const unsigned long long index) const
 {
-	return (m_perm1193[index % 1193ul] * 1423249ul +
-		m_perm1193[(index / 1193ul) % 1193ul] * 1193ul +
-		m_perm1193[(index / 1423249ul) % 1193ul]) * float(0x1.fffffcp-1 / 1697936057ul); // Results in [0,1).
+	return (m_perm1193[index % 1193ull] * 1423249ull +
+		m_perm1193[(index / 1193ull) % 1193ull] * 1193ull +
+		m_perm1193[(index / 1423249ull) % 1193ull]) * float(0x1.fffffcp-1 / 1697936057ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1201(const unsigned long long index) const
 {
-	return (m_perm1201[index % 1201ul] * 1442401ul +
-		m_perm1201[(index / 1201ul) % 1201ul] * 1201ul +
-		m_perm1201[(index / 1442401ul) % 1201ul]) * float(0x1.fffffcp-1 / 1732323601ul); // Results in [0,1).
+	return (m_perm1201[index % 1201ull] * 1442401ull +
+		m_perm1201[(index / 1201ull) % 1201ull] * 1201ull +
+		m_perm1201[(index / 1442401ull) % 1201ull]) * float(0x1.fffffcp-1 / 1732323601ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1213(const unsigned long long index) const
 {
-	return (m_perm1213[index % 1213ul] * 1471369ul +
-		m_perm1213[(index / 1213ul) % 1213ul] * 1213ul +
-		m_perm1213[(index / 1471369ul) % 1213ul]) * float(0x1.fffffcp-1 / 1784770597ul); // Results in [0,1).
+	return (m_perm1213[index % 1213ull] * 1471369ull +
+		m_perm1213[(index / 1213ull) % 1213ull] * 1213ull +
+		m_perm1213[(index / 1471369ull) % 1213ull]) * float(0x1.fffffcp-1 / 1784770597ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1217(const unsigned long long index) const
 {
-	return (m_perm1217[index % 1217ul] * 1481089ul +
-		m_perm1217[(index / 1217ul) % 1217ul] * 1217ul +
-		m_perm1217[(index / 1481089ul) % 1217ul]) * float(0x1.fffffcp-1 / 1802485313ul); // Results in [0,1).
+	return (m_perm1217[index % 1217ull] * 1481089ull +
+		m_perm1217[(index / 1217ull) % 1217ull] * 1217ull +
+		m_perm1217[(index / 1481089ull) % 1217ull]) * float(0x1.fffffcp-1 / 1802485313ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1223(const unsigned long long index) const
 {
-	return (m_perm1223[index % 1223ul] * 1495729ul +
-		m_perm1223[(index / 1223ul) % 1223ul] * 1223ul +
-		m_perm1223[(index / 1495729ul) % 1223ul]) * float(0x1.fffffcp-1 / 1829276567ul); // Results in [0,1).
+	return (m_perm1223[index % 1223ull] * 1495729ull +
+		m_perm1223[(index / 1223ull) % 1223ull] * 1223ull +
+		m_perm1223[(index / 1495729ull) % 1223ull]) * float(0x1.fffffcp-1 / 1829276567ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1229(const unsigned long long index) const
 {
-	return (m_perm1229[index % 1229ul] * 1510441ul +
-		m_perm1229[(index / 1229ul) % 1229ul] * 1229ul +
-		m_perm1229[(index / 1510441ul) % 1229ul]) * float(0x1.fffffcp-1 / 1856331989ul); // Results in [0,1).
+	return (m_perm1229[index % 1229ull] * 1510441ull +
+		m_perm1229[(index / 1229ull) % 1229ull] * 1229ull +
+		m_perm1229[(index / 1510441ull) % 1229ull]) * float(0x1.fffffcp-1 / 1856331989ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1231(const unsigned long long index) const
 {
-	return (m_perm1231[index % 1231ul] * 1515361ul +
-		m_perm1231[(index / 1231ul) % 1231ul] * 1231ul +
-		m_perm1231[(index / 1515361ul) % 1231ul]) * float(0x1.fffffcp-1 / 1865409391ul); // Results in [0,1).
+	return (m_perm1231[index % 1231ull] * 1515361ull +
+		m_perm1231[(index / 1231ull) % 1231ull] * 1231ull +
+		m_perm1231[(index / 1515361ull) % 1231ull]) * float(0x1.fffffcp-1 / 1865409391ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1237(const unsigned long long index) const
 {
-	return (m_perm1237[index % 1237ul] * 1530169ul +
-		m_perm1237[(index / 1237ul) % 1237ul] * 1237ul +
-		m_perm1237[(index / 1530169ul) % 1237ul]) * float(0x1.fffffcp-1 / 1892819053ul); // Results in [0,1).
+	return (m_perm1237[index % 1237ull] * 1530169ull +
+		m_perm1237[(index / 1237ull) % 1237ull] * 1237ull +
+		m_perm1237[(index / 1530169ull) % 1237ull]) * float(0x1.fffffcp-1 / 1892819053ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1249(const unsigned long long index) const
 {
-	return (m_perm1249[index % 1249ul] * 1560001ul +
-		m_perm1249[(index / 1249ul) % 1249ul] * 1249ul +
-		m_perm1249[(index / 1560001ul) % 1249ul]) * float(0x1.fffffcp-1 / 1948441249ul); // Results in [0,1).
+	return (m_perm1249[index % 1249ull] * 1560001ull +
+		m_perm1249[(index / 1249ull) % 1249ull] * 1249ull +
+		m_perm1249[(index / 1560001ull) % 1249ull]) * float(0x1.fffffcp-1 / 1948441249ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1259(const unsigned long long index) const
 {
-	return (m_perm1259[index % 1259ul] * 1585081ul +
-		m_perm1259[(index / 1259ul) % 1259ul] * 1259ul +
-		m_perm1259[(index / 1585081ul) % 1259ul]) * float(0x1.fffffcp-1 / 1995616979ul); // Results in [0,1).
+	return (m_perm1259[index % 1259ull] * 1585081ull +
+		m_perm1259[(index / 1259ull) % 1259ull] * 1259ull +
+		m_perm1259[(index / 1585081ull) % 1259ull]) * float(0x1.fffffcp-1 / 1995616979ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1277(const unsigned long long index) const
 {
-	return (m_perm1277[index % 1277ul] * 1630729ul +
-		m_perm1277[(index / 1277ul) % 1277ul] * 1277ul +
-		m_perm1277[(index / 1630729ul) % 1277ul]) * float(0x1.fffffcp-1 / 2082440933ul); // Results in [0,1).
+	return (m_perm1277[index % 1277ull] * 1630729ull +
+		m_perm1277[(index / 1277ull) % 1277ull] * 1277ull +
+		m_perm1277[(index / 1630729ull) % 1277ull]) * float(0x1.fffffcp-1 / 2082440933ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1279(const unsigned long long index) const
 {
-	return (m_perm1279[index % 1279ul] * 1635841ul +
-		m_perm1279[(index / 1279ul) % 1279ul] * 1279ul +
-		m_perm1279[(index / 1635841ul) % 1279ul]) * float(0x1.fffffcp-1 / 2092240639ul); // Results in [0,1).
+	return (m_perm1279[index % 1279ull] * 1635841ull +
+		m_perm1279[(index / 1279ull) % 1279ull] * 1279ull +
+		m_perm1279[(index / 1635841ull) % 1279ull]) * float(0x1.fffffcp-1 / 2092240639ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1283(const unsigned long long index) const
 {
-	return (m_perm1283[index % 1283ul] * 1646089ul +
-		m_perm1283[(index / 1283ul) % 1283ul] * 1283ul +
-		m_perm1283[(index / 1646089ul) % 1283ul]) * float(0x1.fffffcp-1 / 2111932187ul); // Results in [0,1).
+	return (m_perm1283[index % 1283ull] * 1646089ull +
+		m_perm1283[(index / 1283ull) % 1283ull] * 1283ull +
+		m_perm1283[(index / 1646089ull) % 1283ull]) * float(0x1.fffffcp-1 / 2111932187ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1289(const unsigned long long index) const
 {
-	return (m_perm1289[index % 1289ul] * 1661521ul +
-		m_perm1289[(index / 1289ul) % 1289ul] * 1289ul +
-		m_perm1289[(index / 1661521ul) % 1289ul]) * float(0x1.fffffcp-1 / 2141700569ul); // Results in [0,1).
+	return (m_perm1289[index % 1289ull] * 1661521ull +
+		m_perm1289[(index / 1289ull) % 1289ull] * 1289ull +
+		m_perm1289[(index / 1661521ull) % 1289ull]) * float(0x1.fffffcp-1 / 2141700569ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1291(const unsigned long long index) const
 {
-	return (m_perm1291[index % 1291ul] * 1666681ul +
-		m_perm1291[(index / 1291ul) % 1291ul] * 1291ul +
-		m_perm1291[(index / 1666681ul) % 1291ul]) * float(0x1.fffffcp-1 / 2151685171ul); // Results in [0,1).
+	return (m_perm1291[index % 1291ull] * 1666681ull +
+		m_perm1291[(index / 1291ull) % 1291ull] * 1291ull +
+		m_perm1291[(index / 1666681ull) % 1291ull]) * float(0x1.fffffcp-1 / 2151685171ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1297(const unsigned long long index) const
 {
-	return (m_perm1297[index % 1297ul] * 1682209ul +
-		m_perm1297[(index / 1297ul) % 1297ul] * 1297ul +
-		m_perm1297[(index / 1682209ul) % 1297ul]) * float(0x1.fffffcp-1 / 2181825073ul); // Results in [0,1).
+	return (m_perm1297[index % 1297ull] * 1682209ull +
+		m_perm1297[(index / 1297ull) % 1297ull] * 1297ull +
+		m_perm1297[(index / 1682209ull) % 1297ull]) * float(0x1.fffffcp-1 / 2181825073ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1301(const unsigned long long index) const
 {
-	return (m_perm1301[index % 1301ul] * 1692601ul +
-		m_perm1301[(index / 1301ul) % 1301ul] * 1301ul +
-		m_perm1301[(index / 1692601ul) % 1301ul]) * float(0x1.fffffcp-1 / 2202073901ul); // Results in [0,1).
+	return (m_perm1301[index % 1301ull] * 1692601ull +
+		m_perm1301[(index / 1301ull) % 1301ull] * 1301ull +
+		m_perm1301[(index / 1692601ull) % 1301ull]) * float(0x1.fffffcp-1 / 2202073901ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1303(const unsigned long long index) const
 {
-	return (m_perm1303[index % 1303ul] * 1697809ul +
-		m_perm1303[(index / 1303ul) % 1303ul] * 1303ul +
-		m_perm1303[(index / 1697809ul) % 1303ul]) * float(0x1.fffffcp-1 / 2212245127ul); // Results in [0,1).
+	return (m_perm1303[index % 1303ull] * 1697809ull +
+		m_perm1303[(index / 1303ull) % 1303ull] * 1303ull +
+		m_perm1303[(index / 1697809ull) % 1303ull]) * float(0x1.fffffcp-1 / 2212245127ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1307(const unsigned long long index) const
 {
-	return (m_perm1307[index % 1307ul] * 1708249ul +
-		m_perm1307[(index / 1307ul) % 1307ul] * 1307ul +
-		m_perm1307[(index / 1708249ul) % 1307ul]) * float(0x1.fffffcp-1 / 2232681443ul); // Results in [0,1).
+	return (m_perm1307[index % 1307ull] * 1708249ull +
+		m_perm1307[(index / 1307ull) % 1307ull] * 1307ull +
+		m_perm1307[(index / 1708249ull) % 1307ull]) * float(0x1.fffffcp-1 / 2232681443ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1319(const unsigned long long index) const
 {
-	return (m_perm1319[index % 1319ul] * 1739761ul +
-		m_perm1319[(index / 1319ul) % 1319ul] * 1319ul +
-		m_perm1319[(index / 1739761ul) % 1319ul]) * float(0x1.fffffcp-1 / 2294744759ul); // Results in [0,1).
+	return (m_perm1319[index % 1319ull] * 1739761ull +
+		m_perm1319[(index / 1319ull) % 1319ull] * 1319ull +
+		m_perm1319[(index / 1739761ull) % 1319ull]) * float(0x1.fffffcp-1 / 2294744759ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1321(const unsigned long long index) const
 {
-	return (m_perm1321[index % 1321ul] * 1745041ul +
-		m_perm1321[(index / 1321ul) % 1321ul] * 1321ul +
-		m_perm1321[(index / 1745041ul) % 1321ul]) * float(0x1.fffffcp-1 / 2305199161ul); // Results in [0,1).
+	return (m_perm1321[index % 1321ull] * 1745041ull +
+		m_perm1321[(index / 1321ull) % 1321ull] * 1321ull +
+		m_perm1321[(index / 1745041ull) % 1321ull]) * float(0x1.fffffcp-1 / 2305199161ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1327(const unsigned long long index) const
 {
-	return (m_perm1327[index % 1327ul] * 1760929ul +
-		m_perm1327[(index / 1327ul) % 1327ul] * 1327ul +
-		m_perm1327[(index / 1760929ul) % 1327ul]) * float(0x1.fffffcp-1 / 2336752783ul); // Results in [0,1).
+	return (m_perm1327[index % 1327ull] * 1760929ull +
+		m_perm1327[(index / 1327ull) % 1327ull] * 1327ull +
+		m_perm1327[(index / 1760929ull) % 1327ull]) * float(0x1.fffffcp-1 / 2336752783ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1361(const unsigned long long index) const
 {
-	return (m_perm1361[index % 1361ul] * 1852321ul +
-		m_perm1361[(index / 1361ul) % 1361ul] * 1361ul +
-		m_perm1361[(index / 1852321ul) % 1361ul]) * float(0x1.fffffcp-1 / 2521008881ul); // Results in [0,1).
+	return (m_perm1361[index % 1361ull] * 1852321ull +
+		m_perm1361[(index / 1361ull) % 1361ull] * 1361ull +
+		m_perm1361[(index / 1852321ull) % 1361ull]) * float(0x1.fffffcp-1 / 2521008881ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1367(const unsigned long long index) const
 {
-	return (m_perm1367[index % 1367ul] * 1868689ul +
-		m_perm1367[(index / 1367ul) % 1367ul] * 1367ul +
-		m_perm1367[(index / 1868689ul) % 1367ul]) * float(0x1.fffffcp-1 / 2554497863ul); // Results in [0,1).
+	return (m_perm1367[index % 1367ull] * 1868689ull +
+		m_perm1367[(index / 1367ull) % 1367ull] * 1367ull +
+		m_perm1367[(index / 1868689ull) % 1367ull]) * float(0x1.fffffcp-1 / 2554497863ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1373(const unsigned long long index) const
 {
-	return (m_perm1373[index % 1373ul] * 1885129ul +
-		m_perm1373[(index / 1373ul) % 1373ul] * 1373ul +
-		m_perm1373[(index / 1885129ul) % 1373ul]) * float(0x1.fffffcp-1 / 2588282117ul); // Results in [0,1).
+	return (m_perm1373[index % 1373ull] * 1885129ull +
+		m_perm1373[(index / 1373ull) % 1373ull] * 1373ull +
+		m_perm1373[(index / 1885129ull) % 1373ull]) * float(0x1.fffffcp-1 / 2588282117ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1381(const unsigned long long index) const
 {
-	return (m_perm1381[index % 1381ul] * 1907161ul +
-		m_perm1381[(index / 1381ul) % 1381ul] * 1381ul +
-		m_perm1381[(index / 1907161ul) % 1381ul]) * float(0x1.fffffcp-1 / 2633789341ul); // Results in [0,1).
+	return (m_perm1381[index % 1381ull] * 1907161ull +
+		m_perm1381[(index / 1381ull) % 1381ull] * 1381ull +
+		m_perm1381[(index / 1907161ull) % 1381ull]) * float(0x1.fffffcp-1 / 2633789341ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1399(const unsigned long long index) const
 {
-	return (m_perm1399[index % 1399ul] * 1957201ul +
-		m_perm1399[(index / 1399ul) % 1399ul] * 1399ul +
-		m_perm1399[(index / 1957201ul) % 1399ul]) * float(0x1.fffffcp-1 / 2738124199ul); // Results in [0,1).
+	return (m_perm1399[index % 1399ull] * 1957201ull +
+		m_perm1399[(index / 1399ull) % 1399ull] * 1399ull +
+		m_perm1399[(index / 1957201ull) % 1399ull]) * float(0x1.fffffcp-1 / 2738124199ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1409(const unsigned long long index) const
 {
-	return (m_perm1409[index % 1409ul] * 1985281ul +
-		m_perm1409[(index / 1409ul) % 1409ul] * 1409ul +
-		m_perm1409[(index / 1985281ul) % 1409ul]) * float(0x1.fffffcp-1 / 2797260929ul); // Results in [0,1).
+	return (m_perm1409[index % 1409ull] * 1985281ull +
+		m_perm1409[(index / 1409ull) % 1409ull] * 1409ull +
+		m_perm1409[(index / 1985281ull) % 1409ull]) * float(0x1.fffffcp-1 / 2797260929ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1423(const unsigned long long index) const
 {
-	return (m_perm1423[index % 1423ul] * 2024929ul +
-		m_perm1423[(index / 1423ul) % 1423ul] * 1423ul +
-		m_perm1423[(index / 2024929ul) % 1423ul]) * float(0x1.fffffcp-1 / 2881473967ul); // Results in [0,1).
+	return (m_perm1423[index % 1423ull] * 2024929ull +
+		m_perm1423[(index / 1423ull) % 1423ull] * 1423ull +
+		m_perm1423[(index / 2024929ull) % 1423ull]) * float(0x1.fffffcp-1 / 2881473967ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1427(const unsigned long long index) const
 {
-	return (m_perm1427[index % 1427ul] * 2036329ul +
-		m_perm1427[(index / 1427ul) % 1427ul] * 1427ul +
-		m_perm1427[(index / 2036329ul) % 1427ul]) * float(0x1.fffffcp-1 / 2905841483ul); // Results in [0,1).
+	return (m_perm1427[index % 1427ull] * 2036329ull +
+		m_perm1427[(index / 1427ull) % 1427ull] * 1427ull +
+		m_perm1427[(index / 2036329ull) % 1427ull]) * float(0x1.fffffcp-1 / 2905841483ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1429(const unsigned long long index) const
 {
-	return (m_perm1429[index % 1429ul] * 2042041ul +
-		m_perm1429[(index / 1429ul) % 1429ul] * 1429ul +
-		m_perm1429[(index / 2042041ul) % 1429ul]) * float(0x1.fffffcp-1 / 2918076589ul); // Results in [0,1).
+	return (m_perm1429[index % 1429ull] * 2042041ull +
+		m_perm1429[(index / 1429ull) % 1429ull] * 1429ull +
+		m_perm1429[(index / 2042041ull) % 1429ull]) * float(0x1.fffffcp-1 / 2918076589ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1433(const unsigned long long index) const
 {
-	return (m_perm1433[index % 1433ul] * 2053489ul +
-		m_perm1433[(index / 1433ul) % 1433ul] * 1433ul +
-		m_perm1433[(index / 2053489ul) % 1433ul]) * float(0x1.fffffcp-1 / 2942649737ul); // Results in [0,1).
+	return (m_perm1433[index % 1433ull] * 2053489ull +
+		m_perm1433[(index / 1433ull) % 1433ull] * 1433ull +
+		m_perm1433[(index / 2053489ull) % 1433ull]) * float(0x1.fffffcp-1 / 2942649737ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1439(const unsigned long long index) const
 {
-	return (m_perm1439[index % 1439ul] * 2070721ul +
-		m_perm1439[(index / 1439ul) % 1439ul] * 1439ul +
-		m_perm1439[(index / 2070721ul) % 1439ul]) * float(0x1.fffffcp-1 / 2979767519ul); // Results in [0,1).
+	return (m_perm1439[index % 1439ull] * 2070721ull +
+		m_perm1439[(index / 1439ull) % 1439ull] * 1439ull +
+		m_perm1439[(index / 2070721ull) % 1439ull]) * float(0x1.fffffcp-1 / 2979767519ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1447(const unsigned long long index) const
 {
-	return (m_perm1447[index % 1447ul] * 2093809ul +
-		m_perm1447[(index / 1447ul) % 1447ul] * 1447ul +
-		m_perm1447[(index / 2093809ul) % 1447ul]) * float(0x1.fffffcp-1 / 3029741623ul); // Results in [0,1).
+	return (m_perm1447[index % 1447ull] * 2093809ull +
+		m_perm1447[(index / 1447ull) % 1447ull] * 1447ull +
+		m_perm1447[(index / 2093809ull) % 1447ull]) * float(0x1.fffffcp-1 / 3029741623ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1451(const unsigned long long index) const
 {
-	return (m_perm1451[index % 1451ul] * 2105401ul +
-		m_perm1451[(index / 1451ul) % 1451ul] * 1451ul +
-		m_perm1451[(index / 2105401ul) % 1451ul]) * float(0x1.fffffcp-1 / 3054936851ul); // Results in [0,1).
+	return (m_perm1451[index % 1451ull] * 2105401ull +
+		m_perm1451[(index / 1451ull) % 1451ull] * 1451ull +
+		m_perm1451[(index / 2105401ull) % 1451ull]) * float(0x1.fffffcp-1 / 3054936851ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1453(const unsigned long long index) const
 {
-	return (m_perm1453[index % 1453ul] * 2111209ul +
-		m_perm1453[(index / 1453ul) % 1453ul] * 1453ul +
-		m_perm1453[(index / 2111209ul) % 1453ul]) * float(0x1.fffffcp-1 / 3067586677ul); // Results in [0,1).
+	return (m_perm1453[index % 1453ull] * 2111209ull +
+		m_perm1453[(index / 1453ull) % 1453ull] * 1453ull +
+		m_perm1453[(index / 2111209ull) % 1453ull]) * float(0x1.fffffcp-1 / 3067586677ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1459(const unsigned long long index) const
 {
-	return (m_perm1459[index % 1459ul] * 2128681ul +
-		m_perm1459[(index / 1459ul) % 1459ul] * 1459ul +
-		m_perm1459[(index / 2128681ul) % 1459ul]) * float(0x1.fffffcp-1 / 3105745579ul); // Results in [0,1).
+	return (m_perm1459[index % 1459ull] * 2128681ull +
+		m_perm1459[(index / 1459ull) % 1459ull] * 1459ull +
+		m_perm1459[(index / 2128681ull) % 1459ull]) * float(0x1.fffffcp-1 / 3105745579ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1471(const unsigned long long index) const
 {
-	return (m_perm1471[index % 1471ul] * 2163841ul +
-		m_perm1471[(index / 1471ul) % 1471ul] * 1471ul +
-		m_perm1471[(index / 2163841ul) % 1471ul]) * float(0x1.fffffcp-1 / 3183010111ul); // Results in [0,1).
+	return (m_perm1471[index % 1471ull] * 2163841ull +
+		m_perm1471[(index / 1471ull) % 1471ull] * 1471ull +
+		m_perm1471[(index / 2163841ull) % 1471ull]) * float(0x1.fffffcp-1 / 3183010111ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1481(const unsigned long long index) const
 {
-	return (m_perm1481[index % 1481ul] * 2193361ul +
-		m_perm1481[(index / 1481ul) % 1481ul] * 1481ul +
-		m_perm1481[(index / 2193361ul) % 1481ul]) * float(0x1.fffffcp-1 / 3248367641ul); // Results in [0,1).
+	return (m_perm1481[index % 1481ull] * 2193361ull +
+		m_perm1481[(index / 1481ull) % 1481ull] * 1481ull +
+		m_perm1481[(index / 2193361ull) % 1481ull]) * float(0x1.fffffcp-1 / 3248367641ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1483(const unsigned long long index) const
 {
-	return (m_perm1483[index % 1483ul] * 2199289ul +
-		m_perm1483[(index / 1483ul) % 1483ul] * 1483ul +
-		m_perm1483[(index / 2199289ul) % 1483ul]) * float(0x1.fffffcp-1 / 3261545587ul); // Results in [0,1).
+	return (m_perm1483[index % 1483ull] * 2199289ull +
+		m_perm1483[(index / 1483ull) % 1483ull] * 1483ull +
+		m_perm1483[(index / 2199289ull) % 1483ull]) * float(0x1.fffffcp-1 / 3261545587ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1487(const unsigned long long index) const
 {
-	return (m_perm1487[index % 1487ul] * 2211169ul +
-		m_perm1487[(index / 1487ul) % 1487ul] * 1487ul +
-		m_perm1487[(index / 2211169ul) % 1487ul]) * float(0x1.fffffcp-1 / 3288008303ul); // Results in [0,1).
+	return (m_perm1487[index % 1487ull] * 2211169ull +
+		m_perm1487[(index / 1487ull) % 1487ull] * 1487ull +
+		m_perm1487[(index / 2211169ull) % 1487ull]) * float(0x1.fffffcp-1 / 3288008303ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1489(const unsigned long long index) const
 {
-	return (m_perm1489[index % 1489ul] * 2217121ul +
-		m_perm1489[(index / 1489ul) % 1489ul] * 1489ul +
-		m_perm1489[(index / 2217121ul) % 1489ul]) * float(0x1.fffffcp-1 / 3301293169ul); // Results in [0,1).
+	return (m_perm1489[index % 1489ull] * 2217121ull +
+		m_perm1489[(index / 1489ull) % 1489ull] * 1489ull +
+		m_perm1489[(index / 2217121ull) % 1489ull]) * float(0x1.fffffcp-1 / 3301293169ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1493(const unsigned long long index) const
 {
-	return (m_perm1493[index % 1493ul] * 2229049ul +
-		m_perm1493[(index / 1493ul) % 1493ul] * 1493ul +
-		m_perm1493[(index / 2229049ul) % 1493ul]) * float(0x1.fffffcp-1 / 3327970157ul); // Results in [0,1).
+	return (m_perm1493[index % 1493ull] * 2229049ull +
+		m_perm1493[(index / 1493ull) % 1493ull] * 1493ull +
+		m_perm1493[(index / 2229049ull) % 1493ull]) * float(0x1.fffffcp-1 / 3327970157ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1499(const unsigned long long index) const
 {
-	return (m_perm1499[index % 1499ul] * 2247001ul +
-		m_perm1499[(index / 1499ul) % 1499ul] * 1499ul +
-		m_perm1499[(index / 2247001ul) % 1499ul]) * float(0x1.fffffcp-1 / 3368254499ul); // Results in [0,1).
+	return (m_perm1499[index % 1499ull] * 2247001ull +
+		m_perm1499[(index / 1499ull) % 1499ull] * 1499ull +
+		m_perm1499[(index / 2247001ull) % 1499ull]) * float(0x1.fffffcp-1 / 3368254499ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1511(const unsigned long long index) const
 {
-	return (m_perm1511[index % 1511ul] * 2283121ul +
-		m_perm1511[(index / 1511ul) % 1511ul] * 1511ul +
-		m_perm1511[(index / 2283121ul) % 1511ul]) * float(0x1.fffffcp-1 / 3449795831ul); // Results in [0,1).
+	return (m_perm1511[index % 1511ull] * 2283121ull +
+		m_perm1511[(index / 1511ull) % 1511ull] * 1511ull +
+		m_perm1511[(index / 2283121ull) % 1511ull]) * float(0x1.fffffcp-1 / 3449795831ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1523(const unsigned long long index) const
 {
-	return (m_perm1523[index % 1523ul] * 2319529ul +
-		m_perm1523[(index / 1523ul) % 1523ul] * 1523ul +
-		m_perm1523[(index / 2319529ul) % 1523ul]) * float(0x1.fffffcp-1 / 3532642667ul); // Results in [0,1).
+	return (m_perm1523[index % 1523ull] * 2319529ull +
+		m_perm1523[(index / 1523ull) % 1523ull] * 1523ull +
+		m_perm1523[(index / 2319529ull) % 1523ull]) * float(0x1.fffffcp-1 / 3532642667ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1531(const unsigned long long index) const
 {
-	return (m_perm1531[index % 1531ul] * 2343961ul +
-		m_perm1531[(index / 1531ul) % 1531ul] * 1531ul +
-		m_perm1531[(index / 2343961ul) % 1531ul]) * float(0x1.fffffcp-1 / 3588604291ul); // Results in [0,1).
+	return (m_perm1531[index % 1531ull] * 2343961ull +
+		m_perm1531[(index / 1531ull) % 1531ull] * 1531ull +
+		m_perm1531[(index / 2343961ull) % 1531ull]) * float(0x1.fffffcp-1 / 3588604291ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1543(const unsigned long long index) const
 {
-	return (m_perm1543[index % 1543ul] * 2380849ul +
-		m_perm1543[(index / 1543ul) % 1543ul] * 1543ul +
-		m_perm1543[(index / 2380849ul) % 1543ul]) * float(0x1.fffffcp-1 / 3673650007ul); // Results in [0,1).
+	return (m_perm1543[index % 1543ull] * 2380849ull +
+		m_perm1543[(index / 1543ull) % 1543ull] * 1543ull +
+		m_perm1543[(index / 2380849ull) % 1543ull]) * float(0x1.fffffcp-1 / 3673650007ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1549(const unsigned long long index) const
 {
-	return (m_perm1549[index % 1549ul] * 2399401ul +
-		m_perm1549[(index / 1549ul) % 1549ul] * 1549ul +
-		m_perm1549[(index / 2399401ul) % 1549ul]) * float(0x1.fffffcp-1 / 3716672149ul); // Results in [0,1).
+	return (m_perm1549[index % 1549ull] * 2399401ull +
+		m_perm1549[(index / 1549ull) % 1549ull] * 1549ull +
+		m_perm1549[(index / 2399401ull) % 1549ull]) * float(0x1.fffffcp-1 / 3716672149ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1553(const unsigned long long index) const
 {
-	return (m_perm1553[index % 1553ul] * 2411809ul +
-		m_perm1553[(index / 1553ul) % 1553ul] * 1553ul +
-		m_perm1553[(index / 2411809ul) % 1553ul]) * float(0x1.fffffcp-1 / 3745539377ul); // Results in [0,1).
+	return (m_perm1553[index % 1553ull] * 2411809ull +
+		m_perm1553[(index / 1553ull) % 1553ull] * 1553ull +
+		m_perm1553[(index / 2411809ull) % 1553ull]) * float(0x1.fffffcp-1 / 3745539377ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1559(const unsigned long long index) const
 {
-	return (m_perm1559[index % 1559ul] * 2430481ul +
-		m_perm1559[(index / 1559ul) % 1559ul] * 1559ul +
-		m_perm1559[(index / 2430481ul) % 1559ul]) * float(0x1.fffffcp-1 / 3789119879ul); // Results in [0,1).
+	return (m_perm1559[index % 1559ull] * 2430481ull +
+		m_perm1559[(index / 1559ull) % 1559ull] * 1559ull +
+		m_perm1559[(index / 2430481ull) % 1559ull]) * float(0x1.fffffcp-1 / 3789119879ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1567(const unsigned long long index) const
 {
-	return (m_perm1567[index % 1567ul] * 2455489ul +
-		m_perm1567[(index / 1567ul) % 1567ul] * 1567ul +
-		m_perm1567[(index / 2455489ul) % 1567ul]) * float(0x1.fffffcp-1 / 3847751263ul); // Results in [0,1).
+	return (m_perm1567[index % 1567ull] * 2455489ull +
+		m_perm1567[(index / 1567ull) % 1567ull] * 1567ull +
+		m_perm1567[(index / 2455489ull) % 1567ull]) * float(0x1.fffffcp-1 / 3847751263ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1571(const unsigned long long index) const
 {
-	return (m_perm1571[index % 1571ul] * 2468041ul +
-		m_perm1571[(index / 1571ul) % 1571ul] * 1571ul +
-		m_perm1571[(index / 2468041ul) % 1571ul]) * float(0x1.fffffcp-1 / 3877292411ul); // Results in [0,1).
+	return (m_perm1571[index % 1571ull] * 2468041ull +
+		m_perm1571[(index / 1571ull) % 1571ull] * 1571ull +
+		m_perm1571[(index / 2468041ull) % 1571ull]) * float(0x1.fffffcp-1 / 3877292411ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1579(const unsigned long long index) const
 {
-	return (m_perm1579[index % 1579ul] * 2493241ul +
-		m_perm1579[(index / 1579ul) % 1579ul] * 1579ul +
-		m_perm1579[(index / 2493241ul) % 1579ul]) * float(0x1.fffffcp-1 / 3936827539ul); // Results in [0,1).
+	return (m_perm1579[index % 1579ull] * 2493241ull +
+		m_perm1579[(index / 1579ull) % 1579ull] * 1579ull +
+		m_perm1579[(index / 2493241ull) % 1579ull]) * float(0x1.fffffcp-1 / 3936827539ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1583(const unsigned long long index) const
 {
-	return (m_perm1583[index % 1583ul] * 2505889ul +
-		m_perm1583[(index / 1583ul) % 1583ul] * 1583ul +
-		m_perm1583[(index / 2505889ul) % 1583ul]) * float(0x1.fffffcp-1 / 3966822287ul); // Results in [0,1).
+	return (m_perm1583[index % 1583ull] * 2505889ull +
+		m_perm1583[(index / 1583ull) % 1583ull] * 1583ull +
+		m_perm1583[(index / 2505889ull) % 1583ull]) * float(0x1.fffffcp-1 / 3966822287ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1597(const unsigned long long index) const
 {
-	return (m_perm1597[index % 1597ul] * 2550409ul +
-		m_perm1597[(index / 1597ul) % 1597ul] * 1597ul +
-		m_perm1597[(index / 2550409ul) % 1597ul]) * float(0x1.fffffcp-1 / 4073003173ul); // Results in [0,1).
+	return (m_perm1597[index % 1597ull] * 2550409ull +
+		m_perm1597[(index / 1597ull) % 1597ull] * 1597ull +
+		m_perm1597[(index / 2550409ull) % 1597ull]) * float(0x1.fffffcp-1 / 4073003173ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1601(const unsigned long long index) const
 {
-	return (m_perm1601[index % 1601ul] * 2563201ul +
-		m_perm1601[(index / 1601ul) % 1601ul] * 1601ul +
-		m_perm1601[(index / 2563201ul) % 1601ul]) * float(0x1.fffffcp-1 / 4103684801ul); // Results in [0,1).
+	return (m_perm1601[index % 1601ull] * 2563201ull +
+		m_perm1601[(index / 1601ull) % 1601ull] * 1601ull +
+		m_perm1601[(index / 2563201ull) % 1601ull]) * float(0x1.fffffcp-1 / 4103684801ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1607(const unsigned long long index) const
 {
-	return (m_perm1607[index % 1607ul] * 2582449ul +
-		m_perm1607[(index / 1607ul) % 1607ul] * 1607ul +
-		m_perm1607[(index / 2582449ul) % 1607ul]) * float(0x1.fffffcp-1 / 4149995543ul); // Results in [0,1).
+	return (m_perm1607[index % 1607ull] * 2582449ull +
+		m_perm1607[(index / 1607ull) % 1607ull] * 1607ull +
+		m_perm1607[(index / 2582449ull) % 1607ull]) * float(0x1.fffffcp-1 / 4149995543ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1609(const unsigned long long index) const
 {
-	return (m_perm1609[index % 1609ul] * 2588881ul +
-		m_perm1609[(index / 1609ul) % 1609ul] * 1609ul +
-		m_perm1609[(index / 2588881ul) % 1609ul]) * float(0x1.fffffcp-1 / 4165509529ul); // Results in [0,1).
+	return (m_perm1609[index % 1609ull] * 2588881ull +
+		m_perm1609[(index / 1609ull) % 1609ull] * 1609ull +
+		m_perm1609[(index / 2588881ull) % 1609ull]) * float(0x1.fffffcp-1 / 4165509529ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1613(const unsigned long long index) const
 {
-	return (m_perm1613[index % 1613ul] * 2601769ul +
-		m_perm1613[(index / 1613ul) % 1613ul] * 1613ul +
-		m_perm1613[(index / 2601769ul) % 1613ul]) * float(0x1.fffffcp-1 / 4196653397ul); // Results in [0,1).
+	return (m_perm1613[index % 1613ull] * 2601769ull +
+		m_perm1613[(index / 1613ull) % 1613ull] * 1613ull +
+		m_perm1613[(index / 2601769ull) % 1613ull]) * float(0x1.fffffcp-1 / 4196653397ull); // Results in [0,1).
 }
 
 inline float Halton_sampler::halton1619(const unsigned long long index) const
 {
-	return (m_perm1619[index % 1619ul] * 2621161ul +
-		m_perm1619[(index / 1619ul) % 1619ul] * 1619ul +
-		m_perm1619[(index / 2621161ul) % 1619ul]) * float(0x1.fffffcp-1 / 4243659659ul); // Results in [0,1).
+	return (m_perm1619[index % 1619ull] * 2621161ull +
+		m_perm1619[(index / 1619ull) % 1619ull] * 1619ull +
+		m_perm1619[(index / 2621161ull) % 1619ull]) * float(0x1.fffffcp-1 / 4243659659ull); // Results in [0,1).
 }
 
 #endif // HALTON_SAMPLER_H
